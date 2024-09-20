@@ -16,7 +16,7 @@ async function bootstrap() {
   app.use(new LoggerMiddleware().use.bind(new LoggerMiddleware()));
 
   // Enable CORS with the imported configuration
-  //app.enableCors(corsConfig);
+  app.enableCors();
 
   // Apply ErrorHandlerFilter globally to catch and handle exceptions
   app.useGlobalFilters(new ErrorHandlerFilter());
