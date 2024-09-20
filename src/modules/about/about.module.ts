@@ -13,11 +13,13 @@ import { CreateFaqUseCase } from './use-cases/create-faq.use-case';
 import { UpdateFaqUseCase } from './use-cases/update-faq.use-case';
 import { GetAllFaqsUseCase } from './use-cases/get-all-faqs.use-case';
 import { DeleteFaqUseCase } from './use-cases/delete-faq.use-case';
+import { Member, MemberSchema } from '../user-management/schemas/member.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: About.name, schema: AboutSchema }]),
     MongooseModule.forFeature([{ name: Faq.name, schema: FaqSchema }]),
+    MongooseModule.forFeature([{ name: Member.name, schema: MemberSchema }]),
   ],
   controllers: [AboutController],
   providers: [
