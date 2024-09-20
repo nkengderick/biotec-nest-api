@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 // Define sub-schema for social links
@@ -28,13 +28,7 @@ const SocialLinksSchema = {
 
 // Define sub-schema for leadership team
 const LeadershipTeamSchema = {
-  name: { type: String, required: true },
-  role: { type: String, required: true },
-  linkedin: {
-    type: String,
-    required: false,
-    match: /^https?:\/\/(www\.)?linkedin\.com\/.+/,
-  },
+  member: { type: Types.ObjectId, required: true, ref: "Member"   }
 };
 
 // Define sub-schema for achievements

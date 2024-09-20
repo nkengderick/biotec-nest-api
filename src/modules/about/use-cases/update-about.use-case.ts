@@ -27,7 +27,7 @@ export class UpdateAboutUseCase {
       about.leadership_team = this.upsertArray(
         about.leadership_team,
         updateAboutDto.leadership_team,
-        'name',
+        'member',
       );
     }
 

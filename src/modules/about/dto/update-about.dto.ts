@@ -4,33 +4,19 @@ import {
   IsEmail,
   IsArray,
   ValidateNested,
+  IsMongoId,
 } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { Types } from 'mongoose';
 
 // Leadership Team Class
-export class LeadershipTeamMember {
+class LeadershipTeamMember {
   @ApiPropertyOptional({
-    description: 'Name of the leadership team member',
-    example: 'John Doe',
+    description: 'Member Id of the leadership team member',
   })
-  @IsString({ message: 'Name must be a string.' })
-  name: string;
-
-  @ApiPropertyOptional({
-    description: 'Role of the leadership team member',
-    example: 'President',
-  })
-  @IsString({ message: 'Role must be a string.' })
-  role: string;
-
-  @ApiPropertyOptional({
-    description: 'LinkedIn profile of the leadership team member',
-    example: 'https://linkedin.com/in/johndoe',
-  })
-  @IsOptional()
-  @IsString({ message: 'LinkedIn must be a valid URL.' })
-  linkedin?: string;
+  @IsMongoId({ message: 'member must be an Object ID.' })
+  member: Types.ObjectId;
 }
 
 // Achievements Class
