@@ -36,6 +36,16 @@ export class RegisterMemberDto {
   })
   readonly skills: string[];
 
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  @ApiProperty({
+    description: 'List of interests the member has',
+    type: [String],
+    required: false,
+  })
+  readonly interests: string[];
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
