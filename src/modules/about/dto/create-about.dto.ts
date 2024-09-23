@@ -5,6 +5,8 @@ import {
   IsArray,
   ValidateNested,
   IsMongoId,
+  IsUrl,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -61,6 +63,23 @@ class Partnership {
   @IsOptional()
   @IsString({ message: 'Description must be a string.' })
   description?: string;
+
+
+  @ApiPropertyOptional({
+    description: 'URL to the partner’s logo',
+    example: 'https://example.com/logo.png',
+  })
+  @IsNotEmpty()
+  @IsUrl({}, { message: 'Logo URL must be a valid URL.' })
+  logo: string;
+
+  @ApiPropertyOptional({
+    description: 'Website of the partner',
+    example: 'https://techcorp.com',
+  })
+  @IsOptional()
+  @IsUrl({}, { message: 'Website must be a valid URL.' })
+  website?: string;
 }
 
 // Social Links Class

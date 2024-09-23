@@ -42,6 +42,8 @@ const AchievementsSchema = {
 const PartnershipsSchema = {
   partner: { type: String, required: true },
   description: { type: String, required: false },
+  logo: { type: String, required: true },
+  website: { type: String, required: false },
 };
 
 // Define sub-schema for videos/images/documents/appendices
@@ -152,7 +154,7 @@ export class About extends Document {
 
   @ApiPropertyOptional({
     description: 'Information about partners or sponsors',
-    example: [{ title: 'TechCorp', description: 'Partner since 2020' }],
+    example: [{ title: 'TechCorp', description: 'Partner since 2020', logo: 'https://via.placeholder.com/50.png?text=logo', wesite: 'https://mac-landing.vercel.com' }],
   })
   @Prop({ type: [PartnershipsSchema], required: false })
   partnerships: Record<string, any>[];
