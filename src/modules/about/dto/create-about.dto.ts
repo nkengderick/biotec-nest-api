@@ -107,6 +107,22 @@ class SocialLink {
   @IsOptional()
   @IsString({ message: 'Twitter link must be a valid URL.' })
   twitter?: string;
+
+  @ApiPropertyOptional({
+    description: 'Instagram link',
+    example: 'https://instagram.com/biotechuniverse',
+  })
+  @IsOptional()
+  @IsString({ message: 'Instagram link must be a valid URL.' })
+  instagram?: string;
+
+  @ApiPropertyOptional({
+    description: 'Github link',
+    example: 'https://github.com/biotechuniverse',
+  })
+  @IsOptional()
+  @IsString({ message: 'Github link must be a valid URL.' })
+  github?: string;
 }
 
 // File Class for Appendices, Videos, Images, Documents

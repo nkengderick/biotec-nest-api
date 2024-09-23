@@ -24,6 +24,11 @@ const SocialLinksSchema = {
     required: false,
     match: /^https?:\/\/(www\.)?instagram\.com\/.+/,
   },
+  github: {
+    type: String,
+    required: false,
+    match: /^https?:\/\/(www\.)?github\.com\/.+/,
+  },
 };
 
 // Define sub-schema for leadership team
