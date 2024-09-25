@@ -4,7 +4,6 @@ import {
   Body,
   Param,
   Put,
-  Get,
   HttpCode,
   HttpStatus,
   Patch,
@@ -31,6 +30,8 @@ import {
   ApiBody,
   ApiParam,
 } from '@nestjs/swagger';
+import { User } from '../schemas/user.schema';
+import { AuthResponseDto } from '../dto/auth-response.dto';
 
 @ApiTags('User Management') // Grouping for Swagger
 @Controller('auth')
@@ -43,7 +44,7 @@ export class UserManagementController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Sign up a new user' })
   @ApiBody({ type: SignUpDto })
-  @ApiResponse({ status: 201, description: 'User successfully signed up' })
+  @ApiResponse({ status: 201, description: 'User successfully signed up', type: AuthResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.userManagementService.signUp(signUpDto);
@@ -53,7 +54,7 @@ export class UserManagementController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in a user' })
   @ApiBody({ type: SignInDto })
-  @ApiResponse({ status: 200, description: 'User successfully signed in' })
+  @ApiResponse({ status: 200, description: 'User successfully signed in', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async signIn(@Body() signInDto: SignInDto) {
     return this.userManagementService.signIn(signInDto);

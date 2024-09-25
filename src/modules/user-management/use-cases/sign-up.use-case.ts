@@ -34,7 +34,7 @@ export class SignUpUseCase {
       const payload = { email: user.email, sub: user._id };
       const token = this.jwtService.sign(payload);
 
-      return { access_token: token };
+      return { access_token: token, user: user };
     } catch (error) {
       console.error('Sign-up process failed:', error); // Log the actual error
 
