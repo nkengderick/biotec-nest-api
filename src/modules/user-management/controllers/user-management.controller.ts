@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Get,
 } from '@nestjs/common';
 import { UserManagementService } from '../services/user-management.service';
 
@@ -106,6 +107,15 @@ export class UserManagementController {
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async registerMember(@Body() registerMemberDto: RegisterMemberDto) {
     return this.userManagementService.registerMember(registerMemberDto);
+  }
+
+  @Get('members')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Find all members' })
+  @ApiResponse({ status: 200, description: 'Members retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'No members found' })
+  async findAllMembers() {
+    return this.userManagementService.findAllMembers();
   }
 
   @Put('update-profile')

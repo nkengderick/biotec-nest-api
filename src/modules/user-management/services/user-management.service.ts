@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 // Use cases
 import { ApplyUseCase } from '../use-cases/apply.use-case';
@@ -25,6 +25,7 @@ import { UpdateSettingsDto } from '../dto/update-user-settings.dto';
 import { ForgotPasswordUseCase } from '../use-cases/forgot-password.use-case';
 import { ResetPasswordUseCase } from '../use-cases/reset-password.use-case';
 import { SignInUseCase } from '../use-cases/sign-in.use-case';
+import { MemberRepository } from '../repositories/member.repository';
 
 @Injectable()
 export class UserManagementService {
@@ -41,6 +42,7 @@ export class UserManagementService {
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly updateSettingsUseCase: UpdateSettingsUseCase,
     private readonly assignRoleUseCase: AssignRoleUseCase,
+    private readonly memberRepository: MemberRepository,
   ) {}
 
   // Application Process
@@ -93,5 +95,14 @@ export class UserManagementService {
   // Settings
   async updateSettings(updateSettingsDto: UpdateSettingsDto) {
     return this.updateSettingsUseCase.execute(updateSettingsDto);
+  }
+
+  // Fetch all members
+  async findAllMembers() {
+    const members = await this.memberRepository.findAll();
+    if (!members || members.length === 0) {
+      throw new NotFoundException('No members found');
+    }
+    return members;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Member, MemberDocument } from '../schemas/member.schema';
 
 @Injectable()
@@ -20,9 +20,25 @@ export class MemberRepository {
     return this.memberModel.findById(id).exec();
   }
 
-  // Find members by user ID
+  // Find a member by user ID
   async findByUserId(userId: string): Promise<Member | null> {
     return this.memberModel.findOne({ user_id: userId }).exec();
+  }
+
+  // Find all members and populate user_id with the related User data
+  async findAll(): Promise<Member[]> {
+    const members = await this.memberModel.find().populate('user_id').exec();
+
+    // Ensure user_id is an ObjectId if necessary and cast it if not
+    for (const member of members) {
+      if (!Types.ObjectId.isValid(member.user_id)) {
+        member.user_id = new Types.ObjectId(member.user_id);
+        await member.save(); // Save the updated member document with the ObjectId-casted user_id
+      }
+    }
+
+    // Return populated members with correct user_id types
+    return this.memberModel.find().populate('user_id').exec();
   }
 
   // Update a member by ID
