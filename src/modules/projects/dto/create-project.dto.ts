@@ -18,9 +18,17 @@ export class CreateProjectDto {
   @IsString({ message: 'Title must be a string' })
   readonly title: string;
 
+    @ApiProperty({
+    description: 'A short summary of the project',
+    example: 'This project focuses on biotech innovations.',
+  })
+  @IsNotEmpty({ message: 'Summary should not be empty' })
+  @IsString({ message: 'Summary must be a string' })
+  readonly summary: string;
+
   @ApiProperty({
     description: 'Detailed description of the project',
-    example: 'This project focuses on biotech innovations.',
+    example: '<p>This project focuses on biotech innovations...</p>',
   })
   @IsNotEmpty({ message: 'Description should not be empty' })
   @IsString({ message: 'Description must be a string' })

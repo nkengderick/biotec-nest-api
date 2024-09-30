@@ -14,8 +14,15 @@ export class Project {
   title: string;
 
   @ApiProperty({
-    description: 'Detailed description of the project',
+    description: 'Short summary of the project',
     example: 'This project focuses on biotech innovations.',
+  })
+  @Prop({ required: true })
+  summary: string;
+
+  @ApiProperty({
+    description: 'Detailed description of the project, can include HTML content.',
+    example: '<p>This project focuses on biotech innovations...</p>',
   })
   @Prop({ required: true })
   description: string;

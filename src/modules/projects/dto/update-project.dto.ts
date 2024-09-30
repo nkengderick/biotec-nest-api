@@ -11,8 +11,15 @@ export class UpdateProjectDto {
   readonly title?: string;
 
   @ApiPropertyOptional({
+    description: 'A short summary of the project',
+    example: 'This project focuses on biotech innovations.',
+  })
+  @IsString({ message: 'Summary must be a string' })
+  readonly summary: string;
+
+  @ApiPropertyOptional({
     description: 'Detailed description of the project',
-    example: 'Updated project description.',
+    example: '<p>This project focuses on biotech innovations...</p>',
   })
   @IsOptional()
   @IsString({ message: 'Description must be a string' })
