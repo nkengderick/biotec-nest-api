@@ -20,13 +20,21 @@ export class ProjectMemberRepository {
     return projectMember.save();
   }
 
-  // Find all members of a project
-  async findMembersByProject(projectId: string): Promise<ProjectMember[]> {
-    return this.projectMemberModel
-      .find({ projectId })
-      .populate('memberId')
-      .exec();
-  }
+// Find all members of a project
+async findMembersByProject(projectId: string): Promise<ProjectMember[]> {
+  return this.projectMemberModel
+    .find({ projectId })
+    .populate({
+      path: 'memberId',          // Populate 'memberId' field with Member data
+      model: 'Member',           // Ensure that the 'Member' model is referenced
+      populate: { 
+        path: 'user_id',         // Nested population for 'user_id' inside 'Member'
+        model: 'User'            // Populate 'user_id' with data from the 'User' model
+      }
+    })
+    .exec();
+}
+
 
   // Find all projects a member is involved in
   async findProjectsByMember(memberId: string): Promise<ProjectMember[]> {
