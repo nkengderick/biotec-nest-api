@@ -59,12 +59,12 @@ export class CreateServiceDto {
 
   @ApiProperty({
     description: 'Category of the service',
-    enum: ['health', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
+    enum: ['health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
     default: 'other',
   })
-  @IsEnum(['health', 'technology', 'business', 'microbiology', 'telemedicine', 'other'], {
+  @IsEnum(['health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'], {
     message:
-    "Service category must be one of 'health', 'technology', 'business', 'microbiology', 'telemedicine', 'other'",
+    "Service category must be one of 'health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'",
   })
   service_category: string;
 
