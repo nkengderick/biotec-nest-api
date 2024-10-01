@@ -11,7 +11,11 @@ export class Service {
   @Prop({ required: true })
   title: string;
 
-  @ApiProperty({ description: 'Description of the service' })
+  @ApiProperty({ description: 'Short description or summary of the service' })
+  @Prop({ required: true })
+  summary: string;
+
+  @ApiProperty({ description: 'Detailed description of the service' })
   @Prop({ required: true })
   description: string;
 
@@ -32,12 +36,8 @@ export class Service {
   })
   service_category: string;
 
-  @ApiProperty({ description: 'Price of the service', required: false })
-  @Prop({ required: false, default: null })
-  price: number;
-
   @ApiProperty({
-    description: 'Is the Service Verified?? (default: false)',
+    description: 'Is the service verified? (default: false)',
     type: Boolean,
   })
   @IsBoolean()
@@ -45,14 +45,31 @@ export class Service {
     required: true,
     default: false,
   })
-  is_verified: Boolean;
+  is_verified: boolean;
 
   @ApiProperty({
-    description: 'Portfolio URLs for the service',
+    description: 'Portfolio URLs related to the service',
     type: [String],
   })
   @Prop({ type: [String] })
   portfolio_urls: string[];
+
+  @ApiProperty({ description: 'Pricing plans for the service', type: [Object] })
+  @Prop({
+    type: [
+      {
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
+        description: { type: String, required: false },
+      },
+    ],
+    required: true,
+  })
+  pricing_plans: {
+    name: string;
+    price: number;
+    description?: string;
+  }[];
 
   // Reference to the service providers
   @ApiProperty({ description: 'List of service providers' })

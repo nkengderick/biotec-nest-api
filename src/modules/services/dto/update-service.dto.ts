@@ -7,14 +7,39 @@ import {
   IsBoolean,
   IsArray,
   IsMongoId,
+  ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
+import { Type } from 'class-transformer';
+
+class PricingPlanDto {
+  @ApiProperty({ description: 'Name of the pricing plan' })
+  @IsString({ message: 'The name of the pricing plan must be a string' })
+  name: string;
+
+  @ApiProperty({ description: 'Price of the pricing plan' })
+  @IsNumber({}, { message: 'The price must be a number' })
+  price: number;
+
+  @ApiProperty({
+    description: 'Description of the pricing plan (optional)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ message: 'The description must be a string' })
+  description?: string;
+}
 
 export class UpdateServiceDto {
   @ApiProperty({ description: 'Title of the service', required: false })
   @IsOptional()
   @IsString({ message: 'The title must be a string' })
   title?: string;
+
+  @ApiProperty({ description: 'Short summary of the service', required: false })
+  @IsOptional()
+  @IsString({ message: 'The summary must be a string' })
+  summary?: string;
 
   @ApiProperty({ description: 'Description of the service', required: false })
   @IsOptional()
@@ -45,18 +70,21 @@ export class UpdateServiceDto {
   service_category?: string;
 
   @ApiProperty({
-    description: 'Price of the service (optional)',
+    description: 'Pricing plans for the service',
     required: false,
+    type: [PricingPlanDto],
   })
   @IsOptional()
-  @IsNumber({}, { message: 'Price must be a number' })
-  price?: number;
+  @ValidateNested({ each: true })
+  @Type(() => PricingPlanDto)
+  pricing_plans?: PricingPlanDto[];
 
   @ApiProperty({
     description: 'Portfolio URLs for the service (optional)',
     required: false,
   })
   @IsOptional()
+  @IsArray()
   portfolio_urls?: string[];
 
   @ApiProperty({
@@ -66,7 +94,6 @@ export class UpdateServiceDto {
   @IsOptional()
   @IsBoolean()
   is_verified?: boolean;
-
 
   @ApiProperty({
     description: 'Bookings associated with the service',
@@ -88,4 +115,3 @@ export class UpdateServiceDto {
   @IsMongoId({ each: true })
   service_providers?: Types.ObjectId[];
 }
-
