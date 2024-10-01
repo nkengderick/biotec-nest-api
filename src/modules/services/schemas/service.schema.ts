@@ -28,11 +28,13 @@ export class Service {
 
   @ApiProperty({
     description: 'Category of the service',
-    enum: ['health', 'tech', 'microbiology', 'telemedicine'],
+    enum: ['health', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
+    default: 'other',
   })
   @Prop({
     required: true,
-    enum: ['health', 'tech', 'microbiology', 'telemedicine'],
+    enum: ['health', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
+    default: 'other',
   })
   service_category: string;
 
