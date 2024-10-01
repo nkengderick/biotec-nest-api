@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { model, Model } from 'mongoose';
 import { Service, ServiceDocument } from '../schemas/service.schema';
 import { CreateServiceDto } from '../dto/create-service.dto';
 import { UpdateServiceDto } from '../dto/update-service.dto';
+import path from 'path';
 
 @Injectable()
 export class ServiceRepository {
@@ -27,6 +28,10 @@ export class ServiceRepository {
         populate: {
           path: 'member_id',
           model: 'Member',
+          populate: {
+            path: 'user_id',
+            model: "User"
+          }
         },
       })
       .populate({
