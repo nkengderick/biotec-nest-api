@@ -11,6 +11,7 @@ import { UserRepository } from '../user-management/repositories/user.repository'
 import { User, UserSchema } from '../user-management/schemas/user.schema';
 import { Service, ServiceSchema } from '../services/schemas/service.schema';
 import { EventSchema } from '../events/schemas/event.schema';
+import { Booking, BookingSchema } from '../services/schemas/booking.schema';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EventSchema } from '../events/schemas/event.schema';
       { name: Event.name, schema: EventSchema },
       { name: User.name, schema: UserSchema },
       { name: Service.name, schema: ServiceSchema },
+      { name: Booking.name, schema: BookingSchema },
     ]),
   ],
   controllers: [FeedbackController],
