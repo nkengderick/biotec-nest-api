@@ -1,6 +1,6 @@
 import { IsOptional, IsString, IsDate, IsEnum, IsUrl } from 'class-validator';
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { CollaborationOpportunityDto, CreateProjectDto, MilestoneDto, MultimediaDto, PartnerDto } from './create-project.dto';
+import { CollaborationOpportunityDto, CreateProjectDto, DocumentDto, MilestoneDto, MultimediaDto, PartnerDto } from './create-project.dto';
 
 export class UpdateProjectDto extends PartialType(CreateProjectDto) {
   @ApiPropertyOptional({
@@ -74,6 +74,12 @@ export class UpdateProjectDto extends PartialType(CreateProjectDto) {
     example: '[{ type: "image", url: "http://example.com/image.png" }, { type: "video", url: "http://example.com/video.mp4" }]',
   })
   multimedia?: MultimediaDto[];
+  
+  @ApiPropertyOptional({
+    description: 'Multimedia content related to the project (contracts, reports)',
+    example: '[{ name: "Report One", url: "http://example.com/pdf.pdf" }, { type: "video", url: "http://example.com/video.mp4" }]',
+  })
+  documents?: DocumentDto[];
 
   @ApiPropertyOptional({
     description: 'Progress percentage of the project',

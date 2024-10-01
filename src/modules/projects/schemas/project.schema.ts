@@ -73,6 +73,13 @@ export class Project {
   })
   @Prop({ type: [{ type: Object }], default: [] })
   multimedia: { type: string; url: string }[];
+  @ApiProperty({
+    description: 'Documents related to the project (pdf, word)',
+    example: '[{ name: "Project Initiation Document", url: "http://example.com/doc.doc" }, { name: "Progress Report", url: "http://example.com/pdf.pdf" }]',
+    required: false,
+  })
+  @Prop({ type: [{ type: Object }], default: [] })
+  documents: { name: string; url: string }[];
 
   @ApiProperty({
     description: 'Progress percentage of the project',

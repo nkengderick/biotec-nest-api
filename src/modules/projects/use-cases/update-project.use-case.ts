@@ -33,6 +33,14 @@ export class UpdateProjectUseCase {
       );
     }
 
+    if (updateProjectDto.documents) {
+      project.documents = this.upsertArray(
+        project.documents || [],
+        updateProjectDto.documents,
+        'name', // assuming 'name' is the unique key for documents
+      );
+    }
+
     if (updateProjectDto.partners) {
       project.partners = this.upsertArray(
         project.partners || [],

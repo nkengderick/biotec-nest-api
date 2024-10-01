@@ -53,6 +53,25 @@ export class MultimediaDto {
   readonly url: string;
 }
 
+// Document DTO
+export class DocumentDto {
+  @ApiProperty({
+    description: 'Type of the document (e.g., pdf, doc)',
+    example: 'Progress Report',
+  })
+  @IsNotEmpty({ message: 'Document name should not be empty' })
+  @IsString({ message: 'Document name must be a string' })
+  readonly name: string;
+
+  @ApiProperty({
+    description: 'URL of the Document resource',
+    example: 'http://example.com/doc.doc',
+  })
+  @IsNotEmpty({ message: 'Document URL should not be empty' })
+  @IsUrl({}, { message: 'Document URL must be a valid URL' })
+  readonly url: string;
+}
+
 // Collaboration Opportunity DTO
 export class CollaborationOpportunityDto {
   @ApiProperty({
@@ -173,6 +192,16 @@ export class CreateProjectDto {
   @ValidateNested({ each: true, message: 'Invalid multimedia data' })
   @Type(() => MultimediaDto)
   readonly multimedia?: MultimediaDto[];
+
+  @ApiProperty({
+    description: 'Document content related to the project (reports, contracts)',
+    example: '[{ name: "Contract One", url: "http://example.com/doc.doc" }, { name: "Progress Report", url: "http://example.com/pdf.pdf" }]',
+  })
+  @IsOptional()
+  @IsArray({ message: 'Document must be an array' })
+  @ValidateNested({ each: true, message: 'Invalid document data' })
+  @Type(() => DocumentDto)
+  readonly documents?: DocumentDto[];
 
   @ApiProperty({
     description: 'Progress percentage of the project',
