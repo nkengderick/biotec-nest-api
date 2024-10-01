@@ -49,6 +49,18 @@ export class UpdateProjectUseCase {
       );
     }
 
+        // Update non-array fields if they exist in the update DTO
+    // This ensures that non-array fields like title, description, etc., are updated
+    project.title = updateProjectDto.title ?? project.title;
+    project.description = updateProjectDto.description ?? project.description;
+    project.status = updateProjectDto.status ?? project.status;
+    project.startDate = updateProjectDto.startDate ?? project.startDate;
+    project.endDate = updateProjectDto.endDate ?? project.endDate;
+    project.progress = updateProjectDto.progress ?? project.progress;
+    project.category = updateProjectDto.category ?? project.category;
+    project.projectImageUrl = updateProjectDto.projectImageUrl ?? project.projectImageUrl;
+    project.summary = updateProjectDto.summary ?? project.summary;
+
     // Update the project with the merged data
     return this.projectRepository.update(id, project);
   }
