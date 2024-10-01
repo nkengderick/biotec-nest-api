@@ -28,6 +28,14 @@ class PricingPlanDto {
   @IsOptional()
   @IsString({ message: 'The description must be a string' })
   description?: string;
+
+  @ApiProperty({
+    description: 'Description of the pricing plan (optional)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ message: 'The billing must be a string' })
+  billing_cycle?: string;
 }
 
 export class UpdateServiceDto {

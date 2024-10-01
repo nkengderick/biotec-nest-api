@@ -61,6 +61,7 @@ export class Service {
         name: { type: String, required: true },
         price: { type: Number, required: true },
         description: { type: String, required: false },
+        billing_cycle: { type: String, required: false },
       },
     ],
     required: true,
@@ -69,6 +70,7 @@ export class Service {
     name: string;
     price: number;
     description?: string;
+    billing_cycle?: string;
   }[];
 
   // Reference to the service providers
