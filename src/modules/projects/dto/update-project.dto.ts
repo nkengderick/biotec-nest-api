@@ -1,7 +1,8 @@
 import { IsOptional, IsString, IsDate, IsEnum, IsUrl } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { CollaborationOpportunityDto, CreateProjectDto, MilestoneDto, MultimediaDto, PartnerDto } from './create-project.dto';
 
-export class UpdateProjectDto {
+export class UpdateProjectDto extends PartialType(CreateProjectDto) {
   @ApiPropertyOptional({
     description: 'The title of the project',
     example: 'Updated Project Title',
@@ -15,7 +16,7 @@ export class UpdateProjectDto {
     example: 'This project focuses on biotech innovations.',
   })
   @IsString({ message: 'Summary must be a string' })
-  readonly summary: string;
+  readonly summary?: string;
 
   @ApiPropertyOptional({
     description: 'Detailed description of the project',
@@ -67,4 +68,34 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsUrl({}, { message: 'Project image must be a valid URL' })
   readonly projectImageUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'Multimedia content related to the project (images, videos)',
+    example: '[{ type: "image", url: "http://example.com/image.png" }, { type: "video", url: "http://example.com/video.mp4" }]',
+  })
+  multimedia?: MultimediaDto[];
+
+  @ApiPropertyOptional({
+    description: 'Progress percentage of the project',
+    example: 75,
+  })
+  progress?: number;
+
+  @ApiPropertyOptional({
+    description: 'Project partners or sponsors',
+    example: '[{ name: "XYZ University", logoUrl: "http://example.com/logo.png" }]',
+  })
+  partners?: PartnerDto[];
+
+  @ApiPropertyOptional({
+    description: 'Collaboration opportunities available for the project',
+    example: '[{ expertise: "Microbiology", description: "Looking for a microbiologist to collaborate" }]',
+  })
+  collaborationOpportunities?: CollaborationOpportunityDto[];
+
+  @ApiPropertyOptional({
+    description: 'Milestones or goals for the project',
+    example: '[{ title: "Research Phase", completed: true }, { title: "Development Phase", completed: false }]',
+  })
+  milestones?: MilestoneDto[];
 }

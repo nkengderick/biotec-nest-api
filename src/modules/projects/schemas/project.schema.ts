@@ -49,7 +49,7 @@ export class Project {
     enum: ['ongoing', 'completed'],
   })
   @Prop({ required: true, enum: ['ongoing', 'completed'], default: 'ongoing' })
-  status: string;
+  status: 'ongoing' | 'completed';
 
   @ApiProperty({
     description: 'The category of the project (e.g., research, education)',
@@ -65,6 +65,46 @@ export class Project {
   })
   @Prop({ type: String, default: null })
   projectImageUrl: string;
+
+  @ApiProperty({
+    description: 'Multimedia content related to the project (images, videos)',
+    example: '[{ type: "image", url: "http://example.com/image.png" }, { type: "video", url: "http://example.com/video.mp4" }]',
+    required: false,
+  })
+  @Prop({ type: [{ type: Object }], default: [] })
+  multimedia: { type: string; url: string }[];
+
+  @ApiProperty({
+    description: 'Progress percentage of the project',
+    example: 75,
+    required: false,
+  })
+  @Prop({ type: Number, default: 0 })
+  progress: number;
+
+  @ApiProperty({
+    description: 'Project partners or sponsors',
+    example: '[{ name: "XYZ University", logoUrl: "http://example.com/logo.png" }]',
+    required: false,
+  })
+  @Prop({ type: [{ name: String, logoUrl: String }], default: [] })
+  partners: { name: string; logoUrl?: string }[];
+
+  @ApiProperty({
+    description: 'Collaboration opportunities available for the project',
+    example: '[{ expertise: "Microbiology", description: "Looking for a microbiologist to collaborate" }]',
+    required: false,
+  })
+  @Prop({ type: [{ expertise: String, description: String }], default: [] })
+  collaborationOpportunities: { expertise: string; description: string }[];
+
+    @ApiProperty({
+    description: 'Milestones or goals for the project',
+    example: '[{ title: "Research Phase", completed: true }, { title: "Development Phase", completed: false }]',
+    required: false,
+  })
+  @Prop({ type: [{ title: String, completed: Boolean }], default: [] })
+  milestones: { title: string; completed: boolean }[];
 
   @ApiProperty({
     description: 'The timestamp when the project was created',
