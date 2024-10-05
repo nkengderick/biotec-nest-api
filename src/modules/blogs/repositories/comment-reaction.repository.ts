@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   CommentReaction,
   CommentReactionDocument,
@@ -14,17 +14,35 @@ export class CommentReactionRepository {
     private commentReactionModel: Model<CommentReactionDocument>,
   ) {}
 
+  // Helper function to ensure string IDs are converted to ObjectId
+  private toObjectId(id: string | Types.ObjectId): Types.ObjectId {
+    return typeof id === 'string' ? new Types.ObjectId(id) : id;
+  }
+
+      // Helper function to update all userId fields to ObjectIds in the collection
+  private async ensureUserIdsAreObjectIds(): Promise<void> {
+    await this.commentReactionModel.updateMany(
+      { userId: { $type: 'string' } },  // find documents where userId is still a string
+      [{ $set: { userId: { $toObjectId: '$userId' } } }] // convert userId to ObjectId
+    ).exec();
+  }
+
   // Create or update a reaction for a comment
   async createOrUpdate(
     toggleCommentReactionDto: ToggleCommentReactionDto,
   ): Promise<CommentReaction> {
+    // Ensure commentId and userId are ObjectIds
+    toggleCommentReactionDto.commentId = this.toObjectId(toggleCommentReactionDto.commentId);
+    toggleCommentReactionDto.userId = this.toObjectId(toggleCommentReactionDto.userId);
+
     const newReaction = new this.commentReactionModel(toggleCommentReactionDto);
     return newReaction.save();
   }
 
   // Find all reactions for a specific comment
   async findAllByCommentId(commentId: string): Promise<CommentReaction[]> {
-    return this.commentReactionModel.find({ commentId }).exec();
+    await this.ensureUserIdsAreObjectIds();
+    return this.commentReactionModel.find({ commentId }).populate('userId').exec();
   }
 
   // Find a reaction by comment ID and user ID

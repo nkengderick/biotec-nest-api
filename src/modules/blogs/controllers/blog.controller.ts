@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, Get } from '@nestjs/common';
 import { BlogService } from '../services/blog.service';
 import { CreateBlogPostDto } from '../dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from '../dto/update-blog-post.dto';
@@ -142,5 +142,19 @@ export class BlogController {
     @Body() toggleCommentReactionDto: ToggleCommentReactionDto,
   ) {
     return this.blogService.toggleCommentReaction(toggleCommentReactionDto);
+  }
+
+  @Get('posts')
+  @ApiOperation({
+    summary: 'Get all blog posts with comments and reactions',
+    description:
+      'Retrieves all blog posts along with their associated comments and reactions.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all blog posts with comments and reactions.',
+  })
+  findAllBlogs() {
+    return this.blogService.findAllBlogs();
   }
 }

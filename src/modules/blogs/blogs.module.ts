@@ -27,6 +27,7 @@ import { UserRepository } from '../user-management/repositories/user.repository'
 import { MemberRepository } from '../user-management/repositories/member.repository';
 import { Member, MemberSchema } from '../user-management/schemas/member.schema';
 import { User, UserSchema } from '../user-management/schemas/user.schema';
+import { BlogPostUseCase } from './use-cases/get-blogs.use-case';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { User, UserSchema } from '../user-management/schemas/user.schema';
     TogglePostReactionUseCase,
     ToggleCommentReactionUseCase,
     UpdatePostCommentUseCase,
+    BlogPostUseCase,
     BlogPostRepository,
     PostCommentRepository,
     PostReactionRepository,

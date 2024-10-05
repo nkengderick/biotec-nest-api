@@ -4,6 +4,11 @@ import { Model } from 'mongoose';
 import { BlogPost, BlogPostDocument } from '../schemas/blog-post.schema';
 import { CreateBlogPostDto } from '../dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from '../dto/update-blog-post.dto';
+import path from 'path';
+
+export interface BlogPostWithId extends Omit<BlogPost, '_id'> {
+  _id: string;
+}
 
 @Injectable()
 export class BlogPostRepository {
@@ -17,10 +22,27 @@ export class BlogPostRepository {
     return newBlogPost.save();
   }
 
-  // Find all blog posts
-  async findAll(): Promise<BlogPost[]> {
-    return this.blogPostModel.find().exec();
-  }
+// Find all blog posts
+async findAll(): Promise<any[]> {
+  const blogPosts = await this.blogPostModel
+    .find()
+    .populate({
+      path: 'authorId',
+      model: 'Member', 
+      populate: {      
+        path: 'user_id',
+        model: 'User', 
+      }
+    })
+    .lean()
+    .exec();
+
+  return blogPosts.map((post) => ({
+    ...post,
+    _id: post._id.toString(),
+  }));
+}
+
 
   // Find a blog post by ID
   async findOne(id: string): Promise<BlogPost> {

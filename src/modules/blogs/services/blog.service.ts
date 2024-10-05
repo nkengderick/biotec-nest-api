@@ -12,11 +12,13 @@ import { TogglePostReactionDto } from '../dto/toggle-post-reaction.dto';
 import { ToggleCommentReactionDto } from '../dto/toggle-comment-reaction.dto';
 import { UpdatePostCommentUseCase } from '../use-cases/update-post-comment.use-case';
 import { UpdatePostCommentDto } from '../dto/update-post-comment.dto';
+import { BlogPostUseCase } from '../use-cases/get-blogs.use-case';
 
 @Injectable()
 export class BlogService {
   constructor(
     private readonly createBlogPostUseCase: CreateBlogPostUseCase,
+    private readonly getAllBlogPostUseCase: BlogPostUseCase,
     private readonly updateBlogPostUseCase: UpdateBlogPostUseCase,
     private readonly deleteBlogPostUseCase: DeleteBlogPostUseCase,
     private readonly createPostCommentUseCase: CreatePostCommentUseCase,
@@ -56,5 +58,10 @@ export class BlogService {
   // Reaction operations (Comment)
   toggleCommentReaction(toggleCommentReactionDto: ToggleCommentReactionDto) {
     return this.toggleCommentReactionUseCase.execute(toggleCommentReactionDto);
+  }
+
+   // Fetch all blog posts with their comments and reactions
+  findAllBlogs() {
+    return this.getAllBlogPostUseCase.findAllWithCommentsAndReactions();
   }
 }
