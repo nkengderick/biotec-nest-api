@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsUrl,
+  IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -19,8 +20,17 @@ export class CreateEventDto {
   readonly title: string;
 
   @ApiProperty({
-    description: 'The description of the event',
-    example: 'A conference focusing on the latest biotech innovations.',
+    description: 'A brief text overview of the event',
+    example: 'A short summary of the event purpose and key highlights.',
+  })
+  @IsNotEmpty({ message: 'Summary is required' })
+  @IsString({ message: 'Summary must be a string' })
+  readonly summary: string;
+
+  @ApiProperty({
+    description: 'A detailed description of the event in HTML format',
+    example:
+      '<p>A conference focusing on the latest biotech innovations...</p>',
   })
   @IsNotEmpty({ message: 'Description is required' })
   @IsString({ message: 'Description must be a string' })
@@ -73,11 +83,22 @@ export class CreateEventDto {
   readonly eventImageUrl?: string;
 
   @ApiProperty({
-    description: 'The registration deadline for the event',
+    description: `The registration deadline for the event.  
+    **⚠️ Important:** A scheduled **cron job** will automatically close registration by setting **\`isRegistrationOpen\`** to **\`false\`** once this deadline is met.`,
     example: '2024-10-10T23:59:59Z',
   })
   @IsNotEmpty({ message: 'Registration deadline is required' })
   @Type(() => Date)
   @IsDate({ message: 'Registration deadline must be a valid date' })
   readonly registrationDeadline: Date;
+
+  @ApiProperty({
+    description: `Indicates if registration is currently open (optional).  
+    **ℹ️ Note:** This field will automatically be set to **\`false\`** by a **cron job** after the **\`registrationDeadline\`** passes.`,
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'isRegistrationOpen must be a boolean' })
+  readonly isRegistrationOpen?: boolean;
 }

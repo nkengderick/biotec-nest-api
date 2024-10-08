@@ -14,9 +14,16 @@ export class Event {
   title: string;
 
   @ApiProperty({
-    description: 'A detailed description of the event',
+    description: 'A brief text overview of the event',
+    example: 'A short summary of the event purpose and key highlights.',
+  })
+  @Prop({ required: true })
+  summary: string;
+
+  @ApiProperty({
+    description: 'A detailed description of the event in HTML format',
     example:
-      'A gathering of scientists to showcase the latest in research and innovation.',
+      '<p>A gathering of scientists to showcase the latest in research and innovation...</p>',
   })
   @Prop({ required: true })
   description: string;
@@ -68,6 +75,13 @@ export class Event {
   })
   @Prop({ type: Date, required: true })
   registrationDeadline: Date;
+
+  @ApiProperty({
+    description: 'Indicates if the registration is currently open',
+    example: false,
+  })
+  @Prop({ type: Boolean, default: false })
+  isRegistrationOpen: boolean;
 
   @ApiProperty({
     description: 'The timestamp when the event was created',

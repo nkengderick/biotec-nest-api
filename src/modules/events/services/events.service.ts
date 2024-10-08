@@ -9,9 +9,12 @@ import { CreateEventDto } from '../dto/create-event.dto';
 import { UpdateEventDto } from '../dto/update-event.dto';
 import { RegisterAttendeeDto } from '../dto/register-attendee.dto';
 import { AssignSpeakerDto } from '../dto/assign-speaker.dto';
-import { Event } from '../schemas/event.schema';
+import { Event, EventDocument } from '../schemas/event.schema';
 import { EventAttendee } from '../schemas/event-attendee.schema';
 import { EventSpeaker } from '../schemas/event-speaker.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class EventsService {
@@ -22,6 +25,7 @@ export class EventsService {
     private readonly getAllEventsUseCase: GetAllEventsUseCase,
     private readonly registerAttendeeUseCase: RegisterAttendeeUseCase,
     private readonly assignSpeakerUseCase: AssignSpeakerUseCase,
+    @InjectModel(Event.name) private eventModel: Model<EventDocument>,
   ) {}
 
   // Create a new event
@@ -61,5 +65,23 @@ export class EventsService {
     assignSpeakerDto: AssignSpeakerDto,
   ): Promise<EventSpeaker> {
     return this.assignSpeakerUseCase.execute(assignSpeakerDto);
+  }
+
+  // Cron job to close registration based on registrationDeadline
+  @Cron(CronExpression.EVERY_MINUTE)  // Adjust the schedule as needed
+  async closeExpiredRegistrations() {
+    const now = new Date();
+
+    const expiredEvents = await this.eventModel.find({
+      registrationDeadline: { $lt: now },
+      isRegistrationOpen: true,  // Only affect events where registration is still open
+    });
+
+    for (const event of expiredEvents) {
+      event.isRegistrationOpen = false;
+      await event.save();
+    }
+
+    console.log('Expired registrations closed', expiredEvents.length);
   }
 }

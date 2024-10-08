@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsDate, IsEnum, IsUrl } from 'class-validator';
+import { IsOptional, IsString, IsDate, IsEnum, IsUrl, IsBoolean } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -12,8 +12,18 @@ export class UpdateEventDto {
   readonly title?: string;
 
   @ApiPropertyOptional({
-    description: 'The description of the event',
-    example: 'Updated description of the biotech conference.',
+    description: 'A brief text overview of the event (optional)',
+    example:
+      'An updated short summary of the event purpose and key highlights.',
+  })
+  @IsOptional()
+  @IsString({ message: 'Summary must be a string' })
+  readonly summary?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'A detailed description of the event in HTML format (optional)',
+    example: '<p>Updated HTML content of the biotech conference...</p>',
   })
   @IsOptional()
   @IsString({ message: 'Description must be a string' })
@@ -65,11 +75,22 @@ export class UpdateEventDto {
   readonly eventImageUrl?: string;
 
   @ApiPropertyOptional({
-    description: 'The registration deadline for the event',
+    description: `The registration deadline for the event.  
+    **⚠️ Important:** A scheduled **cron job** will automatically close registration by setting **\`isRegistrationOpen\`** to **\`false\`** once this deadline is met.`,
     example: '2024-10-10T23:59:59Z',
   })
   @IsOptional()
   @Type(() => Date)
   @IsDate({ message: 'Registration deadline must be a valid date' })
   readonly registrationDeadline?: Date;
+
+  @ApiPropertyOptional({
+    description: `Indicates if registration is currently open (optional).  
+    **ℹ️ Note:** This field will automatically be set to **\`false\`** by a **cron job** after the **\`registrationDeadline\`** passes.`,
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'isRegistrationOpen must be a boolean' })
+  readonly isRegistrationOpen?: boolean;
 }
