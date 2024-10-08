@@ -22,9 +22,18 @@ export class EventSpeakerRepository {
     return speaker.save();
   }
 
-  // Find all speakers for a specific event
   async findByEventId(eventId: string): Promise<EventSpeaker[]> {
-    return this.eventSpeakerModel.find({ eventId }).populate('memberId').exec();
+    return this.eventSpeakerModel
+      .find({ eventId })
+      .populate({
+        path: 'memberId',
+        model: 'Member',
+        populate: {
+          path: 'user_id',
+          model: 'User',
+        },
+      })
+      .exec();
   }
 
   // Remove a speaker from an event
