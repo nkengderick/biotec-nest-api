@@ -30,7 +30,7 @@ export class ApplyUseCase {
 
       // Check if the referred member exists (if a referred member ID is provided)
       if (applyDto.referred_by_member_id) {
-        const referredMember = await this.memberRepository.findByUserId(applyDto.referred_by_member_id.toString());
+        const referredMember = await this.memberRepository.findById(applyDto.referred_by_member_id.toString());
         if (!referredMember) {
           throw new HttpException('Referred member does not exist', HttpStatus.BAD_REQUEST);
         }
