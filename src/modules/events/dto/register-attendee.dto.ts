@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterAttendeeDto {
@@ -17,4 +17,13 @@ export class RegisterAttendeeDto {
   @IsNotEmpty({ message: 'User ID is required' })
   @IsString({ message: 'User ID must be a string' })
   readonly userId: string;
+  
+  @ApiProperty({
+    description: 'Additional notes from the user about the event, including referral source and expectations',
+    example: 'Heard about this event through social media; expecting to learn about networking strategies.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ message: 'Notes must be a string' })
+  readonly notes?: string;
 }

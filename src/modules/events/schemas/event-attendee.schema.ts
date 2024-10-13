@@ -41,6 +41,13 @@ export class EventAttendee {
   })
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
+
+  @ApiProperty({
+    description: 'Additional notes from the attendee regarding the event',
+    example: 'Looking forward to this event!',
+  })
+  @Prop({ type: String, required: false })
+  notes?: string; // Optional field for notes
 }
 
 export const EventAttendeeSchema = SchemaFactory.createForClass(EventAttendee);
