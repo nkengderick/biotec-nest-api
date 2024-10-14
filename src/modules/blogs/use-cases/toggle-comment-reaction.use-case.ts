@@ -32,7 +32,7 @@ export class ToggleCommentReactionUseCase {
       );
 
     // If a reaction exists and the user wants to remove it
-    if (existingReaction && remove) {
+    if (existingReaction) {
       await this.commentReactionRepository.delete(existingReaction._id);
       return null; // No reaction after removal
     }
