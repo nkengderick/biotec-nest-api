@@ -32,7 +32,6 @@ export class CommentReactionRepository {
     toggleCommentReactionDto: ToggleCommentReactionDto,
   ): Promise<CommentReaction> {
     // Ensure commentId and userId are ObjectIds
-    toggleCommentReactionDto.commentId = this.toObjectId(toggleCommentReactionDto.commentId);
     toggleCommentReactionDto.userId = this.toObjectId(toggleCommentReactionDto.userId);
 
     const newReaction = new this.commentReactionModel(toggleCommentReactionDto);

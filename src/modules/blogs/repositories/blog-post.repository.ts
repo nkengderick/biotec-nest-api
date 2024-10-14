@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { BlogPost, BlogPostDocument } from '../schemas/blog-post.schema';
 import { CreateBlogPostDto } from '../dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from '../dto/update-blog-post.dto';
-import path from 'path';
 
 export interface BlogPostWithId extends Omit<BlogPost, '_id'> {
   _id: string;
