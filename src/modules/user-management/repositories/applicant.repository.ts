@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, Mongoose, Types } from 'mongoose';
 import { Applicant, ApplicantDocument } from '../schemas/applicant.schema';
+import { User, UserDocument } from '../schemas/user.schema';
+import { Member, MemberDocument } from '../schemas/member.schema';
 
 @Injectable()
 export class ApplicantRepository {
   constructor(
     @InjectModel(Applicant.name)
     private applicantModel: Model<ApplicantDocument>,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
+    @InjectModel(Member.name)
+    private memberModel: Model<MemberDocument>,
   ) {}
 
   // Create a new applicant
@@ -59,19 +65,46 @@ export class ApplicantRepository {
     });
   }
 
-  // Find all members and populate user_id with the related User data
   async findAll(): Promise<Applicant[]> {
-    const members = await this.applicantModel.find().populate('user_id').exec();
+    try {
+      // Fetch all applicants
+      const applicants = await this.applicantModel.find().exec();
 
-    // Ensure user_id is an ObjectId if necessary and cast it if not
-    for (const member of members) {
-      if (!Types.ObjectId.isValid(member.user_id)) {
-        member.user_id = new Types.ObjectId(member.user_id);
-        await member.save(); // Save the updated member document with the ObjectId-casted user_id
-      }
+      // Fetch all users and members once
+      const users = await this.userModel.find().exec();
+      const members = await this.memberModel.find().exec();
+
+      // Map users and members for quick lookups
+      const usersMap = new Map(
+        users.map((user) => [user._id.toString(), user]),
+      );
+      const membersMap = new Map(
+        members.map((member) => [member._id.toString(), member]),
+      );
+
+      // Enrich each applicant with user and member data
+      const enrichedApplicants = applicants.map((applicant) => {
+        // Check if user_id is defined
+        const userId = applicant.user_id ? applicant.user_id.toString() : null; // Safely convert to string
+        const memberId = applicant.referred_by_member_id
+          ? applicant.referred_by_member_id.toString()
+          : null; // Safely convert to string
+
+        const user = userId ? usersMap.get(userId) : null; // Lookup user if userId is valid
+        const member = memberId ? membersMap.get(memberId) : null; // Lookup member if memberId is valid
+
+        return {
+          ...applicant.toObject(), // Convert Mongoose document to plain object
+          user: user || null, // Add user data or null if not found
+          referredByMember: member || null, // Add member data or null if not found
+        };
+      });
+
+      // Return enriched applicants
+      return enrichedApplicants;
+    } catch (error) {
+      console.error('Error fetching applicants, users, or members:', error);
+      throw new Error('Could not fetch data'); // or handle it as needed
     }
-
-    // Return populated members with correct user_id types
-    return this.applicantModel.find().populate('user_id').exec();
   }
 }
