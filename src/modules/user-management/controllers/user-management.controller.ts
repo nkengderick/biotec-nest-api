@@ -200,6 +200,19 @@ export class UserManagementController {
   })
   @ApiResponse({ status: 404, description: 'No applicants found' })
   async findAllApplicants() {
+    return this.userManagementService.findAllApplicants();
+  }
+
+  @Get('users')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Find all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Users retrieved successfully',
+  })
+  @ApiResponse({ status: 404, description: 'No users found' })
+  async findAllUsers() {
+    return this.userManagementService.findAllUsers();
   }
 
   // ---------- Settings Management Routes ----------
