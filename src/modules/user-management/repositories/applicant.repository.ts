@@ -72,7 +72,7 @@ export class ApplicantRepository {
 
       // Fetch all users and members once
       const users = await this.userModel.find().exec();
-      const members = await this.memberModel.find().exec();
+      const members = await this.memberModel.find().populate("user_id").exec();
 
       // Map users and members for quick lookups
       const usersMap = new Map(
