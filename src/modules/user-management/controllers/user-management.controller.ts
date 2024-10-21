@@ -45,7 +45,11 @@ export class UserManagementController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Sign up a new user' })
   @ApiBody({ type: SignUpDto })
-  @ApiResponse({ status: 201, description: 'User successfully signed up', type: AuthResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully signed up',
+    type: AuthResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid data' })
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.userManagementService.signUp(signUpDto);
@@ -55,7 +59,11 @@ export class UserManagementController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in a user' })
   @ApiBody({ type: SignInDto })
-  @ApiResponse({ status: 200, description: 'User successfully signed in', type: AuthResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully signed in',
+    type: AuthResponseDto,
+  })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async signIn(@Body() signInDto: SignInDto) {
     return this.userManagementService.signIn(signInDto);
@@ -181,6 +189,17 @@ export class UserManagementController {
   @ApiResponse({ status: 404, description: 'Application not found' })
   async rejectApplication(@Param('applicantId') applicantId: string) {
     return this.userManagementService.rejectApplication(applicantId);
+  }
+
+  @Get('applicants')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Find all applicants' })
+  @ApiResponse({
+    status: 200,
+    description: 'Applicants retrieved successfully',
+  })
+  @ApiResponse({ status: 404, description: 'No applicants found' })
+  async findAllApplicants() {
   }
 
   // ---------- Settings Management Routes ----------

@@ -8,7 +8,7 @@ export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(user: Partial<User>): Promise<User> {
-    const newUser = new this.userModel({ _id: new Types.ObjectId ,...user });
+    const newUser = new this.userModel({ _id: new Types.ObjectId(), ...user });
     return newUser.save();
   }
 
@@ -26,5 +26,9 @@ export class UserRepository {
 
   async delete(id: string): Promise<void> {
     await this.userModel.findByIdAndDelete(id).exec();
+  }
+
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().exec();
   }
 }

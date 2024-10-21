@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Applicant, ApplicantDocument } from '../schemas/applicant.schema';
 
 @Injectable()
@@ -57,5 +57,21 @@ export class ApplicantRepository {
       application_status: 'rejected',
       reviewed_at: new Date(),
     });
+  }
+
+  // Find all members and populate user_id with the related User data
+  async findAll(): Promise<Applicant[]> {
+    const members = await this.applicantModel.find().populate('user_id').exec();
+
+    // Ensure user_id is an ObjectId if necessary and cast it if not
+    for (const member of members) {
+      if (!Types.ObjectId.isValid(member.user_id)) {
+        member.user_id = new Types.ObjectId(member.user_id);
+        await member.save(); // Save the updated member document with the ObjectId-casted user_id
+      }
+    }
+
+    // Return populated members with correct user_id types
+    return this.applicantModel.find().populate('user_id').exec();
   }
 }

@@ -26,6 +26,8 @@ import { ForgotPasswordUseCase } from '../use-cases/forgot-password.use-case';
 import { ResetPasswordUseCase } from '../use-cases/reset-password.use-case';
 import { SignInUseCase } from '../use-cases/sign-in.use-case';
 import { MemberRepository } from '../repositories/member.repository';
+import { ApplicantRepository } from '../repositories/applicant.repository';
+import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class UserManagementService {
@@ -43,6 +45,8 @@ export class UserManagementService {
     private readonly updateSettingsUseCase: UpdateSettingsUseCase,
     private readonly assignRoleUseCase: AssignRoleUseCase,
     private readonly memberRepository: MemberRepository,
+    private readonly applicantRepository: ApplicantRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   // Application Process
@@ -104,5 +108,21 @@ export class UserManagementService {
       throw new NotFoundException('No members found');
     }
     return members;
+  }
+
+  async findAllApplicants() {
+    const applicants = await this.applicantRepository.findAll();
+    if (!applicants || applicants.length === 0) {
+      throw new NotFoundException('No applicants found');
+    }
+    return applicants;
+  }
+
+  async findAllUsers() {
+    const users = await this.userRepository.findAll();
+    if (!users || users.length === 0) {
+      throw new NotFoundException('No users found');
+    }
+    return users;
   }
 }
