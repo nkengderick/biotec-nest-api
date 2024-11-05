@@ -6,9 +6,16 @@ import { swaggerConfig } from './common/config/swagger.config';
 import { DatabaseService } from './common/services/database.service';
 import { ErrorHandlerFilter } from './common/filters/error-handler.filter';
 import { ValidationPipeConfig } from './common/config/validation-pipe.config';
+import serverlessExpress from '@vendia/serverless-express';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+async function createApp() {
+  const expressApp = express();
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(expressApp),
+  );
 
   app.setGlobalPrefix('api');
 
@@ -37,10 +44,17 @@ async function bootstrap() {
   const databaseService = app.get(DatabaseService);
   await databaseService.onModuleInit();
 
-  // Get port from environment variable or default to 3000
-  const port = process.env.PORT;
-  await app.listen(port);
+  await app.init();
 
-  console.log(`Application is running on: http://localhost:${port}`);
+  return expressApp;
 }
-bootstrap();
+
+let server;
+
+export default async function handler(event, context) {
+  if (!server) {
+    const expressApp = await createApp();
+    server = serverlessExpress({ app: expressApp });
+  }
+  return server(event, context);
+}
