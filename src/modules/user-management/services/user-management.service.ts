@@ -28,6 +28,7 @@ import { SignInUseCase } from '../use-cases/sign-in.use-case';
 import { MemberRepository } from '../repositories/member.repository';
 import { ApplicantRepository } from '../repositories/applicant.repository';
 import { UserRepository } from '../repositories/user.repository';
+import { Member } from '../schemas/member.schema';
 
 @Injectable()
 export class UserManagementService {
@@ -108,6 +109,14 @@ export class UserManagementService {
       throw new NotFoundException('No members found');
     }
     return members;
+  }
+
+  async findMemberByUserId(userId: string): Promise<Member | null> {
+    const member = await this.memberRepository.findByUserId(userId);
+    if (!member) {
+      throw new NotFoundException('No member found');
+    }
+    return member;
   }
 
   async findAllApplicants() {

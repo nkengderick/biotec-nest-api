@@ -33,6 +33,7 @@ import {
 } from '@nestjs/swagger';
 import { User } from '../schemas/user.schema';
 import { AuthResponseDto } from '../dto/auth-response.dto';
+import { Member } from '../schemas/member.schema';
 
 @ApiTags('User Management') // Grouping for Swagger
 @Controller('auth')
@@ -124,6 +125,26 @@ export class UserManagementController {
   @ApiResponse({ status: 404, description: 'No members found' })
   async findAllMembers() {
     return this.userManagementService.findAllMembers();
+  }
+
+  @Get('member/:userId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Find a member by user ID' })
+  @ApiParam({
+    name: 'userId',
+    required: true,
+    description: 'User ID to search',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Member retrieved successfully',
+    type: Member,
+  })
+  @ApiResponse({ status: 404, description: 'Member not found' })
+  async findMemberByUserId(
+    @Param('userId') userId: string,
+  ): Promise<Member | null> {
+    return this.userManagementService.findMemberByUserId(userId);
   }
 
   @Put('update-profile')

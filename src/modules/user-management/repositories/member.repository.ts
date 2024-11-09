@@ -22,7 +22,10 @@ export class MemberRepository {
 
   // Find a member by user ID
   async findByUserId(userId: string): Promise<Member | null> {
-    return this.memberModel.findOne({ user_id: userId }).exec();
+    return this.memberModel
+      .findOne({ user_id: new Types.ObjectId(userId) })
+      .populate('user_id')
+      .exec();
   }
 
   // Find all members and populate user_id with the related User data
