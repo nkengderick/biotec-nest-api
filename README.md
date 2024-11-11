@@ -13,6 +13,7 @@ The BTVerse server is designed to handle various modules such as user management
 - [Environment Setup](#environment-setup)
 - [Running the Application](#running-the-application)
 - [Folder Structure](#folder-structure)
+- [Architecture Overview](#architecture-overview)
 - [Modules](#modules)
 - [API Documentation Access](#api-documentation-access)
 - [API Documentation Guide](#api-documentation-guide)
@@ -49,16 +50,18 @@ The BTVerse server is designed to handle various modules such as user management
 
 Before running the server, you need to configure environment variables. Create a `.env` file in the root directory of your project and provide the following variable
 
-  ```bash
-  JWT_SECRET=your_super_secret_key
-  ALLOWED_ORIGINS=http://localhost:3000,http://example.com
-  FRONTEND_URL=https://www.tenantsphere.com
-  PORT=5000
-  MONGO_DB_URI=mongodb+srv://devteambiotech:test@test.3dntn.mongodb.net/?retryWrites=true&w=majority&appName=test
-  EMAIL_USERNAME=nkengportfolio@gmail.com
-  EMAIL_PASSWORD=lfxtryqkxpayjrjz
-  EMAIL_FROM=nkengbderick@gmail.com
-  ```
+```bash
+JWT_SECRET=your_super_secret_key
+ALLOWED_ORIGINS=http://localhost:3000,https://btverse.com
+FRONTEND_URL=https://www.btverse.com
+PORT=5000
+MONGO_DB_URI=mongodb+srv://devteambiotech:test@test.3dntn.mongodb.net/?retryWrites=true&w=majority&appName=test
+EMAIL_USERNAME=nkengportfolio@gmail.com
+EMAIL_PASSWORD=lfxtryqkxpayjrjz
+EMAIL_FROM=nkengbderick@gmail.com
+BOTPRESS_URL=http://localhost:3000/api/v1/bots/bot_id
+BOTPRESS_USER=user_id
+```
 
 ---
 
@@ -67,6 +70,7 @@ Before running the server, you need to configure environment variables. Create a
 To run the application locally:
 
 1. **Run the NestJS server**:
+
 ```bash
   npm run start:dev
 ```
@@ -75,10 +79,10 @@ To run the application locally:
 
 To build and run the application in production:
 
-  ```bash
-  npm run build
-  npm run start:prod
-  ```
+```bash
+npm run build
+npm run start:prod
+```
 
 ---
 
@@ -86,23 +90,60 @@ To build and run the application in production:
 
 Here is an overview of the folder structure for the BTVerse server:
 
-  ```bash
-  /src
-  ├── app.module.ts            # Root module
-  ├── main.ts                  # Application entry point
-  ├── common/                  # Common utilities like middleware, pipes, config
-  ├── modules/                 # Contains the different feature modules
-  │   ├── user-management/     # Module for managing users and authentication
-  │   ├── projects/            # Module for managing projects
-  │   ├── events/              # Module for managing events
-  │   └── other-modules/       # Placeholder for additional modules
-  └── test/                    # Unit and e2e tests
-  ```
+```bash
+/src
+├── app.module.ts            # Root module
+├── main.ts                  # Application entry point
+├── common/                  # Common utilities like middleware, pipes, config
+├── modules/                 # Contains the different feature modules
+│   ├── user-management/     # Module for managing users and authentication
+│   ├── projects/            # Module for managing projects
+│   ├── events/              # Module for managing events
+│   └── other-modules/       # Placeholder for additional modules
+└── test/                    # Unit and e2e tests
+```
+
+---
+
+## **Architecture Overview**
+
+In the BTVerse Server, we follow a modular, clean architecture based on a **`5-LAYERED`** structure to promote scalability, maintainability, and separation of concerns.
+
+```bash
+/src
+│── modules/
+│   ├── module-name/
+│   │   ├── controllers/     # Handles incoming HTTP requests and routing
+│   │   ├── services/        # Handles the business logic
+│   │   ├── use-cases/       # Business use cases and complex operations
+│   │   ├── repositories/    # Handles data access to MongoDB (via Mongoose)
+│   │   ├── schemas/         # Mongoose data models
+│   │   └── dtos/            # Data Transfer Objects (for validation)
+```
+1. **Schemas (Data Layer)**:
+  - Provides a blueprint for how data is stored in the database
+  - It specifies the fields, types, and validation rules for each collection
+2. **Repositories (Data Access Layer)**:
+  - Manages database interactions and abstracts away the data access logic from other layers.
+  - They handle **`CRUD`** operations and any complex queries
+3. **DTOs (Data Transfer Objects)**:
+  - Enforces validation and shapes the data passed between the clientm, server and all layers.
+  - Ensures only formatted data passes via controller to services
+4. **Use Cases (Business Logic or Application Layer)**:
+  - Contains the business logic for each specific action.
+  - handles **complex operations**, ensuring that all business rules are applied consistently
+5. **Services (Business Service Layer)**:
+  - Encapsulates business operations and interacts with repositories for data access.
+  - Bridge between controllers and repositories/use-cases
+6. **Controllers (Presentation Layer)**
+  - Manages request handling, routing, and response formatting. 
+  - Validate incoming HTTP request, route them to the appropriate services, and return response to client
 ---
 
 ## **Modules**
 
 ### 1. **User Management Module**
+
 Handles user authentication, registration, password management, and profile updates.
 
 - **Features**:
@@ -113,6 +154,7 @@ Handles user authentication, registration, password management, and profile upda
   - Role-Based Access Control (Admin, Member, Customer)
 
 ### 2. **Projects Module**
+
 Manages project creation, updating, deleting, and member assignment.
 
 - **Features**:
@@ -122,6 +164,7 @@ Manages project creation, updating, deleting, and member assignment.
   - Manage Project Categories and Status (Ongoing, Completed)
 
 ### 3. **Events Module**
+
 Manages event creation, updating, and handling attendees and speakers.
 
 - **Features**:
@@ -132,6 +175,7 @@ Manages event creation, updating, and handling attendees and speakers.
   - Event Management including Start/End Times, Location, and Status
 
 ### 4. **Services Module**
+
 Handles management of services including creation, updating, and verification.
 
 - **Features**:
@@ -141,6 +185,7 @@ Handles management of services including creation, updating, and verification.
   - View Service Details and List of Available Services
 
 ### 5. About Module
+
 Manages content and information related to the `"About"` section of the application.
 
 - **Features**:
@@ -148,6 +193,7 @@ Manages content and information related to the `"About"` section of the applicat
   - Manage Information Displayed on the About Page
 
 ### 6. **More Modules**
+
 This server is designed to be easily extendable with new modules. Each module follows a clean structure based on **NestJS** conventions.
 
 - **Features**:
@@ -179,9 +225,10 @@ The API documentation is automatically generated using **Swagger**. Once the ser
 
 After starting the server, open the following URL in your browser to access the Swagger API documentation:
 
-  ```bash
-  http://localhost:3000/api-docs
-  ```
+```bash
+http://localhost:3000/api-docs
+```
+
 ### **Swagger Provides:**
 
 - **Detailed information about each endpoint**: Swagger automatically generates detailed documentation for all available API endpoints, including the URL, HTTP method (GET, POST, PUT, DELETE), and descriptions.
@@ -201,6 +248,7 @@ We welcome contributions to the **BTVerse Server**! Please follow the guidelines
 ### **Branch Naming Conventions**
 
 Use the following conventions for naming your branches:
+
 - **feature/your-feature-name**: For new features.
 - **bugfix/description-of-fix**: For fixing bugs.
 - **chore/task-name**: For other tasks like documentation updates or refactoring.
@@ -212,7 +260,9 @@ Use the following conventions for naming your branches:
 - Ensure all functions and methods are properly commented and documented.
 
 ### **Commit Messages**
+
 Use clear and concise commit messages with the following structure:
+
 - **feat**: Description of the new feature.
 - **fix**: Description of the bug fix.
 - **docs**: Documentation updates.
@@ -222,6 +272,7 @@ Use clear and concise commit messages with the following structure:
 - **chore**: Other updates like build scripts or dependency changes.
 
 #### **Example commit message**:
+
 ```bash
 feat: add event registration API
 ```
@@ -233,12 +284,15 @@ feat: add event registration API
 Ensure that all new features and bug fixes are accompanied by appropriate unit tests and end-to-end tests.
 
 #### **Run Unit Tests**:
+
 To run unit tests, use the following command:
+
 ```bash
 npm run test
 ```
 
 ### **Run End-to-End (E2E) Tests**:
+
 To run end-to-end tests, use the following command:
 
 ```bash
@@ -246,6 +300,7 @@ npm run test:e2e
 ```
 
 ### **Code Coverage**:
+
 Make sure to maintain or improve code coverage with the following command:
 
 ```bash
@@ -266,6 +321,7 @@ All new APIs must be properly documented using **Swagger** decorators. Ensure th
 ---
 
 This code provides the structure and guidelines for contributing to the **BTVerse Server**, covering:
+
 - **Branch Naming Conventions**: Describes how to name branches when working on different features or tasks.
 - **Code Style**: Guidelines for maintaining consistent code formatting and style using tools like Prettier and adhering to the Airbnb JavaScript Style Guide.
 - **Commit Messages**: Ensures that contributors use meaningful and clear commit messages with specific prefixes like `feat`, `fix`, `docs`, etc.
@@ -273,5 +329,3 @@ This code provides the structure and guidelines for contributing to the **BTVers
 - **API Documentation**: Ensures that all APIs are properly documented using Swagger for better clarity and collaboration.
 
 This section includes commands for running tests, ensuring code coverage, and guidelines for documenting APIs with **Swagger** decorators. Make sure to follow these guidelines for smooth development and collaboration across the team.
-
-
