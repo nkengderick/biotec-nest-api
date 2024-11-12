@@ -50,13 +50,6 @@ export class User {
   user_type: string;
 
   @ApiProperty({
-    description: 'URL of the user’s profile photo (optional)',
-    example: 'http://example.com/photo.png',
-  })
-  @Prop({ default: null })
-  profile_photo_url: string;
-
-  @ApiProperty({
     description: 'Date the user account was created',
     example: '2024-09-18T12:34:56.789Z',
     default: 'created date',

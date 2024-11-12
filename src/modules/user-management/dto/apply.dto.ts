@@ -15,6 +15,10 @@ export class ApplyDto {
   @ApiProperty({ description: 'ID of the user applying', type: String })
   readonly user_id: Types.ObjectId;
 
+  @IsString({ message: 'Profile Photo url must be a string' })
+  @ApiProperty({ description: 'Profile Photo of the new user', type: String })
+  readonly profile_photo_url: string;
+
   @IsNotEmpty({ message: 'Motivation letter cannot be empty' })
   @IsString({ message: 'Motivation letter must be a string' })
   @ApiProperty({

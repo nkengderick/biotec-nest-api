@@ -5,7 +5,6 @@ import {
   MinLength,
   Matches,
   IsIn,
-  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -36,11 +35,6 @@ export class SignUpDto {
   @IsString({ message: 'Last name must be a string' })
   @ApiProperty({ description: 'Last name of the new user', type: String })
   readonly last_name: string;
-
-  @IsOptional()
-  @IsString({ message: 'Profile Photo url must be a string' })
-  @ApiProperty({ description: 'Profile Photo of the new user', type: String })
-  readonly profile_photo_url: string;
 
   @IsNotEmpty({ message: 'User type cannot be empty' })
   @IsIn(['admin', 'member', 'customer', 'applicant'], {
