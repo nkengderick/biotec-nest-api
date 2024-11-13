@@ -66,6 +66,13 @@ export class Applicant {
   })
   @Prop({ type: String, required: false })
   resume_url: string;
+
+  @ApiProperty({
+    description: 'URL of the user’s profile photo (optional)',
+    example: 'http://example.com/photo.png',
+  })
+  @Prop({ default: null })
+  profile_photo_url: string;
 }
 
 export const ApplicantSchema = SchemaFactory.createForClass(Applicant);

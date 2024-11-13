@@ -82,4 +82,8 @@ export class RegisterMemberDto {
     required: false,
   })
   readonly resume_url: string;
+
+  @IsString({ message: 'Profile Photo url must be a string' })
+  @ApiProperty({ description: 'Profile Photo of the new user', type: String })
+  readonly profile_photo_url: string;
 }
