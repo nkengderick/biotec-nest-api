@@ -12,8 +12,6 @@ export class ResetPasswordUseCase {
   ) {}
 
   async execute(resetPasswordDto: ResetPasswordDto) {
-    const hashedPassword = await bcrypt.hash(resetPasswordDto.new_password, 10);
-
     // Verify the JWT token
     let payload;
     try {
@@ -26,7 +24,15 @@ export class ResetPasswordUseCase {
 
     // Extract the user ID from the token's payload
     const userId = payload.sub;
-    console.log(userId, "===" , resetPasswordDto.userId)
+    
+    // Check if the userId from the token matches the one in the resetPasswordDto
+    if (userId !== resetPasswordDto.userId) {
+      throw new BadRequestException(
+        'User ID from token does not match the provided user ID',
+      );
+    }
+
+    console.log(userId, '===', resetPasswordDto.userId);
 
     // Find the user by the extracted user ID
     const user = await this.userRepository.findById(userId);
@@ -38,8 +44,8 @@ export class ResetPasswordUseCase {
     const passwordHash = await bcrypt.hash(resetPasswordDto.new_password, 10);
 
     // Use the repository to update the password hash
-    await this.userRepository.update(userId, { password_hash: passwordHash });
+    const u = await this.userRepository.update(userId, { password_hash: passwordHash });
 
-    return { message: 'Password reset successfully' };
+    return { message: 'Password reset successfully', user: u };
   }
 }

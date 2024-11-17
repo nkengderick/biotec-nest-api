@@ -20,8 +20,11 @@ export class UserRepository {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async update(id: string, user: Partial<User>): Promise<User> {
-    return this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+  async update(id: string, user: Partial<User>): Promise<User | null> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(new Types.ObjectId(id), user, { new: true })
+      .exec();
+    return updatedUser;
   }
 
   async delete(id: string): Promise<void> {

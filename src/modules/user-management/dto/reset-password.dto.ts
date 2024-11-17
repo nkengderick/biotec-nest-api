@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MinLength, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, IsEmail, IsMongoId, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetPasswordDto {
@@ -10,7 +10,7 @@ export class ResetPasswordDto {
   })
   token: string;
 
-  @IsEmail()
+  @IsMongoId()
   @IsNotEmpty()
   @ApiProperty({
     description: 'User ID associated with the password reset',
@@ -19,10 +19,14 @@ export class ResetPasswordDto {
   userId: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @Matches(/(?=.*\d)(?=.*[A-Z])(?=.*\W)/, {
+    message:
+      'Password must contain at least one uppercase letter, one number, and one special character',
+  })
   @IsNotEmpty()
   @ApiProperty({
-    description: 'New password to set, must be at least 8 characters long',
+    description: 'New password to set, must be at least 6 characters long',
     type: String,
   })
   new_password: string;
