@@ -24,15 +24,6 @@ export class ResetPasswordUseCase {
 
     // Extract the user ID from the token's payload
     const userId = payload.sub;
-    
-    // Check if the userId from the token matches the one in the resetPasswordDto
-    if (userId !== resetPasswordDto.userId) {
-      throw new BadRequestException(
-        'User ID from token does not match the provided user ID',
-      );
-    }
-
-    console.log(userId, '===', resetPasswordDto.userId);
 
     // Find the user by the extracted user ID
     const user = await this.userRepository.findById(userId);

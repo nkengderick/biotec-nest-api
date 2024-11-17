@@ -10,14 +10,6 @@ export class ResetPasswordDto {
   })
   token: string;
 
-  @IsMongoId()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'User ID associated with the password reset',
-    type: String,
-  })
-  userId: string;
-
   @IsString()
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @Matches(/(?=.*\d)(?=.*[A-Z])(?=.*\W)/, {
