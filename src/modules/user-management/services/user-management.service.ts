@@ -29,6 +29,7 @@ import { MemberRepository } from '../repositories/member.repository';
 import { ApplicantRepository } from '../repositories/applicant.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { Member } from '../schemas/member.schema';
+import { Applicant } from '../schemas/applicant.schema';
 
 @Injectable()
 export class UserManagementService {
@@ -117,6 +118,14 @@ export class UserManagementService {
       throw new NotFoundException('No member found');
     }
     return member;
+  }
+  
+  async findApplicantByUserId(userId: string): Promise<Applicant | null> {
+    const applicant = await this.applicantRepository.findByUserId(userId);
+    if (!applicant) {
+      throw new NotFoundException('No Applicant found');
+    }
+    return applicant;
   }
 
   async findAllApplicants() {

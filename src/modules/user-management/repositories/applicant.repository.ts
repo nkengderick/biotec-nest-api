@@ -28,8 +28,48 @@ export class ApplicantRepository {
   }
 
   // Find applicants by user ID
-  async findByUserId(userId: string): Promise<Applicant | null> {
-    return this.applicantModel.findOne({ user_id: userId }).exec();
+  async findByUserId(userId: string): Promise<any | null> {
+    try {
+      // Find the applicant with the given user ID
+      const applicant = await this.applicantModel
+        .findOne({ user_id: userId })
+        .exec();
+      if (!applicant) {
+        return null; // Return null if no applicant is found
+      }
+
+      // Fetch all users and members once
+      const users = await this.userModel.find().exec();
+      const members = await this.memberModel.find().populate('user_id').exec();
+
+      // Map users and members for quick lookups
+      const usersMap = new Map(
+        users.map((user) => [user._id.toString(), user]),
+      );
+      const membersMap = new Map(
+        members.map((member) => [member._id.toString(), member]),
+      );
+
+      // Enrich the applicant with user and member data
+      const userIdString = applicant.user_id
+        ? applicant.user_id.toString()
+        : null; // Safely convert to string
+      const memberIdString = applicant.referred_by_member_id
+        ? applicant.referred_by_member_id.toString()
+        : null; // Safely convert to string
+
+      const user = userIdString ? usersMap.get(userIdString) : null; // Lookup user if userId is valid
+      const member = memberIdString ? membersMap.get(memberIdString) : null; // Lookup member if memberId is valid
+
+      return {
+        ...applicant.toObject(), // Convert Mongoose document to plain object
+        user: user || null, // Add user data or null if not found
+        referredByMember: member || null, // Add member data or null if not found
+      };
+    } catch (error) {
+      console.error('Error fetching applicant, users, or members:', error);
+      throw new Error('Could not fetch data'); // or handle it as needed
+    }
   }
 
   // Update an applicant by ID
@@ -72,7 +112,7 @@ export class ApplicantRepository {
 
       // Fetch all users and members once
       const users = await this.userModel.find().exec();
-      const members = await this.memberModel.find().populate("user_id").exec();
+      const members = await this.memberModel.find().populate('user_id').exec();
 
       // Map users and members for quick lookups
       const usersMap = new Map(

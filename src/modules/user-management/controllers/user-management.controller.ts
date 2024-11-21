@@ -34,6 +34,7 @@ import {
 import { User } from '../schemas/user.schema';
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { Member } from '../schemas/member.schema';
+import { Applicant } from '../schemas/applicant.schema';
 
 @ApiTags('User Management') // Grouping for Swagger
 @Controller('auth')
@@ -145,6 +146,26 @@ export class UserManagementController {
     @Param('userId') userId: string,
   ): Promise<Member | null> {
     return this.userManagementService.findMemberByUserId(userId);
+  }
+
+  @Get('applicant/:userId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Find a applicant by user ID' })
+  @ApiParam({
+    name: 'userId',
+    required: true,
+    description: 'User ID to search',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Applicant retrieved successfully',
+    type: Applicant,
+  })
+  @ApiResponse({ status: 404, description: 'Applicant not found' })
+  async findApplicantByUserId(
+    @Param('userId') userId: string,
+  ): Promise<Applicant | null> {
+    return this.userManagementService.findApplicantByUserId(userId);
   }
 
   @Put('update-profile')
