@@ -51,11 +51,13 @@ export class CreateServiceDto {
   @ApiProperty({
     description: 'Type of the service',
   })
+  @IsString({ message: 'The service type must be a string' })
   service_type: string;
-
+  
   @ApiProperty({
     description: 'Category of the service',
   })
+  @IsString({ message: 'The service category must be a string' })
   service_category: string;
 
   @ApiProperty({
