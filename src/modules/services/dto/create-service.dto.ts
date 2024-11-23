@@ -50,21 +50,11 @@ export class CreateServiceDto {
 
   @ApiProperty({
     description: 'Type of the service',
-    enum: ['association', 'member'],
-  })
-  @IsEnum(['association', 'member'], {
-    message: 'Service type must be either "association" or "member"',
   })
   service_type: string;
 
   @ApiProperty({
     description: 'Category of the service',
-    enum: ['health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
-    default: 'other',
-  })
-  @IsEnum(['health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'], {
-    message:
-    "Service category must be one of 'health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'",
   })
   service_category: string;
 

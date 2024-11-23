@@ -21,20 +21,15 @@ export class Service {
 
   @ApiProperty({
     description: 'Type of service (association or member)',
-    enum: ['association', 'member'],
   })
-  @Prop({ required: true, enum: ['association', 'member'] })
+  @Prop({ required: true })
   service_type: string;
 
   @ApiProperty({
     description: 'Category of the service',
-    enum: ['health', 'technology', 'education', 'business', 'microbiology', 'telemedicine', 'other'],
-    default: 'other',
   })
   @Prop({
     required: true,
-    enum: ['health', 'education', 'technology', 'business', 'microbiology', 'telemedicine', 'other'],
-    default: 'other',
   })
   service_category: string;
 
