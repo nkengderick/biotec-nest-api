@@ -30,6 +30,7 @@
     "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^7.4.0",
     "@vendia/serverless-express": "^4.12.6",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "botpress": "^10.51.10",
     "class-transformer": "^0.5.1",

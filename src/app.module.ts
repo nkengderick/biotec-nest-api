@@ -15,6 +15,8 @@ import { BlogModule } from './modules/blogs/blogs.module';
 import { BlogService } from './modules/blogs/services/blog.service';
 import { FeedbackModule } from './modules/feedbacks/feedbacks.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
+import { FapshiModule } from './common/fapshi/fapshi.module';
+import { PaymentsModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { ChatbotModule } from './modules/chatbot/chatbot.module';
     AboutModule,
     BlogModule,
     FeedbackModule,
+    FapshiModule,
+    PaymentsModule,
     ChatbotModule,
   ],
   controllers: [AppController],
