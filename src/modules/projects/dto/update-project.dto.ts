@@ -45,13 +45,13 @@ export class UpdateProjectDto extends PartialType(CreateProjectDto) {
   @ApiPropertyOptional({
     description: 'Current status of the project',
     example: 'completed',
-    enum: ['ongoing', 'completed'],
+    enum: ['ongoing', 'completed', 'upcoming'],
   })
   @IsOptional()
-  @IsEnum(['ongoing', 'completed'], {
-    message: 'Status must be either ongoing or completed',
+  @IsEnum(['ongoing', 'completed', 'upcoming'], {
+    message: 'Status must be either ongoing, upcoming or completed',
   })
-  readonly status?: 'ongoing' | 'completed';
+  readonly status?: 'ongoing' | 'completed' | 'upcoming';
 
   @ApiPropertyOptional({
     description: 'Category of the project (e.g., research, education)',
