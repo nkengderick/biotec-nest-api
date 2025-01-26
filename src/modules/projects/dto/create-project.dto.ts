@@ -158,13 +158,13 @@ export class CreateProjectDto {
   @ApiProperty({
     description: 'Current status of the project',
     example: 'ongoing',
-    enum: ['ongoing', 'completed'],
+    enum: ['ongoing', 'completed', 'upcoming'],
   })
   @IsNotEmpty({ message: 'Status is required' })
-  @IsEnum(['ongoing', 'completed'], {
-    message: 'Status must be either ongoing or completed',
+  @IsEnum(['ongoing', 'completed', 'upcoming'], {
+    message: 'Status must be either ongoing, upcoming or completed',
   })
-  readonly status: 'ongoing' | 'completed';
+  readonly status: 'ongoing' | 'completed' | 'upcoming';
 
   @ApiProperty({
     description: 'Category of the project (e.g., research, education)',

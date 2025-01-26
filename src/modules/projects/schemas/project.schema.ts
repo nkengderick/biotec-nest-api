@@ -46,10 +46,10 @@ export class Project {
   @ApiProperty({
     description: 'The current status of the project',
     example: 'ongoing',
-    enum: ['ongoing', 'completed'],
+    enum: ['ongoing', 'completed', 'upcoming'],
   })
-  @Prop({ required: true, enum: ['ongoing', 'completed'], default: 'ongoing' })
-  status: 'ongoing' | 'completed';
+  @Prop({ required: true, enum: ['ongoing', 'completed', 'upcoming'], default: 'ongoing' })
+  status: 'ongoing' | 'completed' | 'upcoming';
 
   @ApiProperty({
     description: 'The category of the project (e.g., research, education)',
