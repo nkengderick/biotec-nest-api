@@ -31,7 +31,6 @@ import {
   ApiBody,
   ApiParam,
 } from '@nestjs/swagger';
-import { User } from '../schemas/user.schema';
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { Member } from '../schemas/member.schema';
 import { Applicant } from '../schemas/applicant.schema';
