@@ -12,6 +12,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+
   // Apply LoggerMiddleware globally
   app.use(new LoggerMiddleware().use.bind(new LoggerMiddleware()));
 
