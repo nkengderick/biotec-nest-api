@@ -32,31 +32,31 @@ export class ForgotPasswordUseCase {
     const subject = 'Password Reset Request';
 
     const htmlContent = `
-      <p>Hello ${user.first_name},</p>
-      <p>We received a request to reset the password for your account. If you did not make this request, you can safely ignore this email.</p>
-      <p>To reset your password, please click the button below:</p>
-      <p style="text-align: center;">
-        <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Reset Your Password</a>
-      </p>
-      <p>If you have any issues or questions, feel free to contact our support team.</p>
-      <p>Best regards,</p>
-      <p>The Service Team</p>
+    <p>Dear ${user.first_name},</p>
+    <p>We have received a request to reset the password for your account. If you did not initiate this request, please disregard this email.</p>
+    <p>To proceed with resetting your password, please click the button below:</p>
+    <p style="text-align: center;">
+      <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Reset Your Password</a>
+    </p>
+    <p>If you encounter any issues or require further assistance, please do not hesitate to contact our support team.</p>
+    <p>Best regards,</p>
+    <p>BioTec Universe Service Team</p>
     `;
 
     // Prepare a plain text version as a fallback
     const textContent = `
-      Hello ${user.first_name},
+    Dear ${user.first_name},
 
-      We received a request to reset the password for your account. If you did not make this request, you can safely ignore this email.
+    We have received a request to reset the password for your account. If you did not initiate this request, please disregard this email.
 
-      To reset your password, please click the following link:
+    To proceed with resetting your password, please use the following link:
 
-      ${resetUrl}
+    ${resetUrl}
 
-      If you have any issues or questions, feel free to contact our support team.
+    If you encounter any issues or require further assistance, please do not hesitate to contact our support team.
 
-      Best regards,
-      The Service Team
+    Best regards,  
+    BioTec Universe Service Team
     `;
 
     // Send the email with HTML and plain text content

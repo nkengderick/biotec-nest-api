@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+} from '@nestjs/common';
 import { ApplicantRepository } from '../repositories/applicant.repository';
 import { ApplyDto } from '../dto/apply.dto';
 import { MemberRepository } from '../repositories/member.repository';
@@ -17,22 +22,36 @@ export class ApplyUseCase {
   async execute(applyDto: ApplyDto) {
     try {
       // Check if the user exists
-      const user = await this.userRepository.findById(applyDto.user_id.toString());
+      const user = await this.userRepository.findById(
+        applyDto.user_id.toString(),
+      );
       if (!user) {
-        throw new NotFoundException(`User with ID ${applyDto.user_id} does not exist`);
+        throw new NotFoundException(
+          `User with ID ${applyDto.user_id} does not exist`,
+        );
       }
 
       // Check if an applicant with the same user ID already exists
-      const existingApplicant = await this.applicantRepository.findByUserId(applyDto.user_id.toString());
+      const existingApplicant = await this.applicantRepository.findByUserId(
+        applyDto.user_id.toString(),
+      );
       if (existingApplicant) {
-        throw new HttpException('Applicant with the same user ID already exists', HttpStatus.CONFLICT);
+        throw new HttpException(
+          'Applicant with the same user ID already exists',
+          HttpStatus.CONFLICT,
+        );
       }
 
       // Check if the referred member exists (if a referred member ID is provided)
       if (applyDto.referred_by_member_id) {
-        const referredMember = await this.memberRepository.findById(applyDto.referred_by_member_id.toString());
+        const referredMember = await this.memberRepository.findById(
+          applyDto.referred_by_member_id.toString(),
+        );
         if (!referredMember) {
-          throw new HttpException('Referred member does not exist', HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            'Referred member does not exist',
+            HttpStatus.BAD_REQUEST,
+          );
         }
       }
 
@@ -40,20 +59,24 @@ export class ApplyUseCase {
       const applicant = await this.applicantRepository.create(applyDto);
 
       // Send confirmation email to the user
-      const subject = 'Application Received';
+      const subject = 'Confirmation of Application Submission';
+
       const text = `
-        Dear ${user.first_name},
+      Dear ${user.first_name},
 
-        We have received your application. Thank you for applying to join us!
+      We are pleased to inform you that we have successfully received your application. Thank you for your interest in joining us. 
 
-        Best regards,
-        The Team
+      Our team will carefully review your submission, and we will reach out to you should we require any additional information. In the meantime, if you have any questions, please do not hesitate to contact us.
+
+      Best regards,  
+      BioTec Universe  
       `;
 
       const html = `
-        <p>Dear ${user.first_name},</p>
-        <p>We have received your application. Thank you for applying to join us!</p>
-        <p>Best regards,<br />The Team</p>
+      <p>Dear ${user.first_name},</p>
+      <p>We are pleased to inform you that we have successfully received your application. Thank you for your interest in joining us.</p>
+      <p>Our team will carefully review your submission, and we will reach out to you should we require any additional information. In the meantime, if you have any questions, please do not hesitate to contact us.</p>
+      <p>Best regards,<br />BioTec Universe</p>
       `;
 
       let emailSent = false;
@@ -61,44 +84,61 @@ export class ApplyUseCase {
         await this.sendEmailUseCase.execute(user.email, subject, text, html);
         emailSent = true;
       } catch (emailError) {
-        console.error(`Failed to send application confirmation email to ${user.email}:`, emailError);
+        console.error(
+          `Failed to send application confirmation email to ${user.email}:`,
+          emailError,
+        );
       }
 
       // Send an email to the team about the new applicant
       const teamEmail = process.env.TEAM_EMAIL;
       if (teamEmail) {
-        const teamSubject = `New Applicant: ${user.first_name} ${user.last_name}`;
+        const teamSubject = `New Application Received: ${user.first_name} ${user.last_name}`;
+
         const teamText = `
-          Dear Team,
+        Dear Team,
 
-          A new applicant has submitted their application.
+        A new application has been submitted. Please find the applicant's details below:
 
-          Applicant Details:
-          - Name: ${user.first_name} ${user.last_name}
-          - Email: ${user.email}
-          - Specialization Area: ${applyDto.specialization_area}
+        Applicant Details:
+        - Name: ${user.first_name} ${user.last_name}
+        - Email: ${user.email}
+        - Specialization Area: ${applyDto.specialization_area}
 
-          Best regards,
-          The Application System
+        Please review the application at your earliest convenience.
+
+        Best regards,  
+        BioTec Universe Application System  
         `;
 
         const teamHtml = `
-          <p>Dear Team,</p>
-          <p>A new applicant has submitted their application.</p>
-          <p><strong>Applicant Details:</strong></p>
-          <ul>
-            <li><strong>Name:</strong> ${user.first_name} ${user.last_name}</li>
-            <li><strong>Email:</strong> ${user.email}</li>
-            <li><strong>Specialization Area:</strong> ${applyDto.specialization_area}</li>
-          </ul>
-          <p>Best regards,<br />The Application System</p>
+        <p>Dear Team,</p>
+        <p>A new application has been submitted. Please find the applicant's details below:</p>
+        <p><strong>Applicant Details:</strong></p>
+        <ul>
+          <li><strong>Name:</strong> ${user.first_name} ${user.last_name}</li>
+          <li><strong>Email:</strong> ${user.email}</li>
+          <li><strong>Specialization Area:</strong> ${applyDto.specialization_area}</li>
+        </ul>
+        <p>Please review the application at your earliest convenience.</p>
+        <p>Best regards,<br />BioTec Universe Application System</p>
         `;
 
         try {
-          await this.sendEmailUseCase.execute(teamEmail, teamSubject, teamText, teamHtml);
-          console.log(`Email sent to the team at ${teamEmail} about the new applicant.`);
+          await this.sendEmailUseCase.execute(
+            teamEmail,
+            teamSubject,
+            teamText,
+            teamHtml,
+          );
+          console.log(
+            `Email sent to the team at ${teamEmail} about the new applicant.`,
+          );
         } catch (teamEmailError) {
-          console.error(`Failed to send email to the team at ${teamEmail}:`, teamEmailError);
+          console.error(
+            `Failed to send email to the team at ${teamEmail}:`,
+            teamEmailError,
+          );
         }
       } else {
         console.warn('Team email not set in the environment variables.');
@@ -116,7 +156,10 @@ export class ApplyUseCase {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        throw new HttpException('Something went wrong during the application process', HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(
+          'Something went wrong during the application process',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
   }
