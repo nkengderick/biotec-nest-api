@@ -1,0 +1,16 @@
+<p>Dear Team,</p>
+
+<p>A new application has been submitted. Please find the applicant's details
+  below:</p>
+
+<p><strong>Applicant Details:</strong></p>
+<ul>
+  <li><strong>Name:</strong> {{applicantName}}</li>
+  <li><strong>Email:</strong> {{applicantEmail}}</li>
+  <li><strong>Specialization Area:</strong> {{specializationArea}}</li>
+  {{#if referredBy}}
+    <li><strong>Referred By:</strong> {{referredBy}}</li>
+  {{/if}}
+</ul>
+
+<p>Please review the application at your earliest convenience.</p>

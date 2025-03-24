@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { AssociationRole } from './member-role.schema';
 
 export type MemberDocument = Member & Document;
 
@@ -74,6 +75,18 @@ export class Member {
   })
   @Prop({ default: null })
   profile_photo_url: string;
+
+  @ApiProperty({
+    description: 'The role assigned to the member',
+    example: AssociationRole.President,
+    enum: AssociationRole,
+  })
+  @Prop({
+    enum: AssociationRole,
+    required: true,
+    default: AssociationRole.RegularMember,
+  })
+  role: AssociationRole;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);

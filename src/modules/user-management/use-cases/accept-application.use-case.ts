@@ -1,16 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ApplicantRepository } from '../repositories/applicant.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { MemberRepository } from '../repositories/member.repository'; // Import MemberRepository
 import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
+import { AssignRoleUseCase } from './assign-role.use-case';
+import { AssociationRole } from '../schemas/member-role.schema';
+import { RegisterMemberUseCase } from './register-member.use-case';
+import { RegisterMemberDto } from '../dto/register-member.dto';
 
 @Injectable()
 export class AcceptApplicationUseCase {
   constructor(
     private readonly applicantRepository: ApplicantRepository,
     private readonly userRepository: UserRepository,
-    private readonly memberRepository: MemberRepository, // Inject MemberRepository
+    private readonly registerMemberUseCase: RegisterMemberUseCase,
     private readonly sendEmailUseCase: SendEmailUseCase,
+    private readonly assignRoleUseCase: AssignRoleUseCase,
   ) {}
 
   async execute(applicantId: string) {
@@ -36,63 +40,52 @@ export class AcceptApplicationUseCase {
     }
 
     // 3. Create a new member based on applicant data
-    const newMember = await this.memberRepository.create({
-      user_id: applicant.user_id,
-      specialization: applicant.specialization_area,
-      resume_url: applicant.resume_url,
-      profile_photo_url: applicant.profile_photo_url,
-      // Add other relevant fields from applicant to member
-      // For example:
-      // bio: applicant.bio,
-      // ...
-    });
+    const registerMemberDto = RegisterMemberDto.fromApplicant(applicant);
+    const newMember =
+      await this.registerMemberUseCase.execute(registerMemberDto);
 
     if (!newMember) {
       throw new Error('Failed to create new member');
     }
 
-    // 5. Send a congratulatory email to the user
-    const subject = 'Congratulations! Your Application Has Been Approved';
-    const textContent = `
-      Dear ${updatedUser.first_name},
+    // 4. Assign 'Regular Member' role
+    const assignRole = await this.assignRoleUseCase.execute({
+      member_id: (newMember as any)._id,
+      role: AssociationRole.RegularMember,
+      assigned_by: 'system',
+    });
 
-      Congratulations! We are pleased to inform you that your application has been approved. You are now officially a member.
+    if (!assignRole) {
+      throw new Error('Failed to assign role');
+    }
 
-      Next Steps:
-      - Log in to your account to access member-exclusive resources.
-      - Connect with our community, contribute in projects and participate in upcoming events.
+    // 5. Send a congratulatory email to the user using template
+    const templateData = {
+      userName: updatedUser.first_name,
+      userEmail: updatedUser.email,
+      emailTitle: 'Application Approved - Welcome to BioTec Universe!',
+      dashboardUrl: `${process.env.FRONTEND_URL}/profile`,
+      actionRequired: true,
+      actionUrl: `${process.env.FRONTEND_URL}/profile`,
+      actionText: 'Go to Member Profile',
+      secondaryInfo:
+        'Your membership gives you access to exclusive resources and events.',
+    };
 
-      If you have any questions, feel free to reach out.
-
-      Best regards,
-      BioTec Universe Team
-    `;
-
-    const htmlContent = `
-      <p>Dear ${updatedUser.first_name},</p>
-      <p>Congratulations! We are pleased to inform you that your application has been approved. You are now officially a member.</p>
-      <p><strong>Next Steps:</strong></p>
-      <ul>
-        <li>Log in to your account to access member-exclusive resources.</li>
-        <li>Connect with our community, contribute in projects and participate in upcoming events.</li>
-      </ul>
-      <p>If you have any questions, feel free to reach out.</p>
-      <p>Best regards,<br />BioTec Universe Team</p>
-    `;
-
-    await this.sendEmailUseCase.execute(
+    await this.sendEmailUseCase.executeTemplated(
       updatedUser.email,
-      subject,
-      textContent,
-      htmlContent,
+      'Congratulations! Your Application Has Been Approved',
+      'accept-application',
+      templateData,
     );
 
     return {
       message:
-        'Application accepted, user promoted to member, new member created, and email sent',
+        'Application accepted, user promoted to member, new member created, regular member role assigned, and email sent',
       applicant,
       updatedUser,
       newMember,
+      assignRole,
     };
   }
 }

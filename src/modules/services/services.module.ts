@@ -26,6 +26,10 @@ import { ServiceService } from './services/service.service';
 import { User, UserSchema } from '../user-management/schemas/user.schema';
 import { Member, MemberSchema } from '../user-management/schemas/member.schema';
 import { EmailService } from 'src/common/services/email.service';
+import { EmailTemplateService } from 'src/common/services/email-template.service';
+import { GetAboutUseCase } from '../about/use-cases/get-about.use-case';
+import { AboutRepository } from '../about/repositories/about.repository';
+import { About, AboutSchema } from '../about/schemas/about.schema';
 
 @Module({
   imports: [
@@ -35,11 +39,13 @@ import { EmailService } from 'src/common/services/email.service';
       { name: Booking.name, schema: BookingSchema },
       { name: User.name, schema: UserSchema },
       { name: Member.name, schema: MemberSchema },
+      { name: About.name, schema: AboutSchema },
     ]),
   ],
   controllers: [ServiceController],
   providers: [
     EmailService,
+    EmailTemplateService,
     ServiceService,
     ServiceRepository,
     ServiceProviderRepository,
@@ -54,9 +60,11 @@ import { EmailService } from 'src/common/services/email.service';
     BookingService,
     UpdateBookingStatusUseCase,
     SendEmailUseCase,
-    UserRepository, 
+    UserRepository,
     MemberRepository,
     SendEmailUseCase,
+    GetAboutUseCase,
+    AboutRepository,
   ],
   exports: [ServiceService],
 })

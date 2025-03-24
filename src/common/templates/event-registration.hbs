@@ -1,0 +1,21 @@
+<p>You have successfully registered for the event "{{eventTitle}}".</p>
+
+<p><strong>Event Details:</strong></p>
+<ul>
+  <li><strong>Date:</strong> {{eventDate}}</li>
+  <li><strong>Time:</strong> {{eventStartTime}} - {{eventEndTime}}</li>
+  <li><strong>Location:</strong> {{eventLocation}}</li>
+</ul>
+
+{{#if eventDescription}}
+  <p><strong>Event Description:</strong></p>
+  <p>{{eventDescription}}</p>
+{{/if}}
+
+<p>We look forward to your participation!</p>
+
+{{#if actionRequired}}
+  <div class='button-container'>
+    <a href='{{actionUrl}}' class='button'>{{actionText}}</a>
+  </div>
+{{/if}}

@@ -1,0 +1,18 @@
+<p>You have successfully booked the service "{{serviceTitle}}" for
+  {{bookingDate}}.</p>
+
+<p><strong>Service Details:</strong></p>
+<ul>
+  <li><strong>Description:</strong> {{serviceDescription}}</li>
+  <li><strong>Category:</strong> {{serviceCategory}}</li>
+  <li><strong>Price:</strong> {{servicePrice}}</li>
+  <li><strong>Type:</strong> {{serviceType}}</li>
+</ul>
+
+<p>We look forward to serving you!</p>
+
+{{#if actionRequired}}
+  <div class='button-container'>
+    <a href='{{actionUrl}}' class='button'>{{actionText}}</a>
+  </div>
+{{/if}}

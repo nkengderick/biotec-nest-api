@@ -28,43 +28,25 @@ export class ForgotPasswordUseCase {
     // Create a reset URL with the token
     const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password/${resetToken}`;
 
-    // Prepare the subject and content of the email
-    const subject = 'Password Reset Request';
+    // Prepare the email data using the template
+    const templateData = {
+      userName: user.first_name,
+      userEmail: user.email,
+      emailTitle: 'Password Reset Request',
+      resetUrl: resetUrl,
+      actionRequired: true,
+      actionUrl: resetUrl,
+      actionText: 'Reset Your Password',
+      secondaryInfo:
+        'If you did not request a password reset, you can safely ignore this email. Your account is secure.',
+    };
 
-    const htmlContent = `
-    <p>Dear ${user.first_name},</p>
-    <p>We have received a request to reset the password for your account. If you did not initiate this request, please disregard this email.</p>
-    <p>To proceed with resetting your password, please click the button below:</p>
-    <p style="text-align: center;">
-      <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">Reset Your Password</a>
-    </p>
-    <p>If you encounter any issues or require further assistance, please do not hesitate to contact our support team.</p>
-    <p>Best regards,</p>
-    <p>BioTec Universe Service Team</p>
-    `;
-
-    // Prepare a plain text version as a fallback
-    const textContent = `
-    Dear ${user.first_name},
-
-    We have received a request to reset the password for your account. If you did not initiate this request, please disregard this email.
-
-    To proceed with resetting your password, please use the following link:
-
-    ${resetUrl}
-
-    If you encounter any issues or require further assistance, please do not hesitate to contact our support team.
-
-    Best regards,  
-    BioTec Universe Service Team
-    `;
-
-    // Send the email with HTML and plain text content
-    await this.sendEmailUseCase.execute(
+    // Send the email using the template
+    await this.sendEmailUseCase.executeTemplated(
       user.email,
-      subject,
-      textContent,
-      htmlContent,
+      'Password Reset Request',
+      'reset-password',
+      templateData,
     );
 
     return { message: 'Password reset instructions sent to your email' };

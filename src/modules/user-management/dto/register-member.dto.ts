@@ -4,9 +4,12 @@ import {
   IsArray,
   IsOptional,
   IsUrl,
+  IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { AssociationRole } from '../schemas/member-role.schema';
+import { Applicant } from '../schemas/applicant.schema';
 
 export class RegisterMemberDto {
   @IsNotEmpty()
@@ -15,7 +18,7 @@ export class RegisterMemberDto {
     description: 'ID of the user to register as a member',
     type: String,
   })
-  readonly user_id: Types.ObjectId;
+  user_id: Types.ObjectId;
 
   @IsString()
   @IsOptional()
@@ -24,7 +27,7 @@ export class RegisterMemberDto {
     type: String,
     required: false,
   })
-  readonly bio: string;
+  bio: string;
 
   @IsArray()
   @IsOptional()
@@ -34,7 +37,7 @@ export class RegisterMemberDto {
     type: [String],
     required: false,
   })
-  readonly skills: string[];
+  skills: string[];
 
   @IsArray()
   @IsOptional()
@@ -44,7 +47,7 @@ export class RegisterMemberDto {
     type: [String],
     required: false,
   })
-  readonly interests: string[];
+  interests: string[];
 
   @IsNotEmpty()
   @IsString()
@@ -52,7 +55,7 @@ export class RegisterMemberDto {
     description: 'Specialization area of the member',
     type: String,
   })
-  readonly specialization: string;
+  specialization: string;
 
   @IsString()
   @IsOptional()
@@ -61,7 +64,7 @@ export class RegisterMemberDto {
     type: String,
     required: false,
   })
-  readonly address: string;
+  address: string;
 
   @IsArray()
   @IsOptional()
@@ -71,7 +74,7 @@ export class RegisterMemberDto {
     type: [String],
     required: false,
   })
-  readonly social_links: string[];
+  social_links: string[];
 
   @IsString()
   @IsOptional()
@@ -81,9 +84,36 @@ export class RegisterMemberDto {
     type: String,
     required: false,
   })
-  readonly resume_url: string;
+  resume_url: string;
 
   @IsString({ message: 'Profile Photo url must be a string' })
   @ApiProperty({ description: 'Profile Photo of the new user', type: String })
-  readonly profile_photo_url: string;
+  profile_photo_url: string;
+
+  @IsNotEmpty()
+  @IsEnum({
+    enum: AssociationRole,
+    message: 'Role must be a valid Association Role',
+  })
+  @ApiProperty({
+    description: 'The role assigned to the member',
+    example: AssociationRole.President,
+    enum: AssociationRole,
+  })
+  role: AssociationRole;
+
+  static fromApplicant(applicant: Applicant): RegisterMemberDto {
+    const dto = new RegisterMemberDto();
+    dto.user_id = applicant.user_id;
+    dto.bio = null;
+    dto.skills = null;
+    dto.interests = null;
+    dto.specialization = applicant.specialization_area;
+    dto.address = null;
+    dto.social_links = null;
+    dto.resume_url = applicant.resume_url;
+    dto.profile_photo_url = applicant.profile_photo_url;
+    dto.role = AssociationRole.RegularMember;
+    return dto;
+  }
 }

@@ -31,11 +31,6 @@ const SocialLinksSchema = {
   },
 };
 
-// Define sub-schema for leadership team
-const LeadershipTeamSchema = {
-  member: { type: Types.ObjectId, required: true, ref: "Member"   }
-};
-
 // Define sub-schema for achievements
 const AchievementsSchema = {
   title: { type: String, required: true },
@@ -132,19 +127,6 @@ export class About extends Document {
   address: string;
 
   @ApiPropertyOptional({
-    description: 'Leadership team and their roles',
-    example: [
-      {
-        name: 'John Doe',
-        role: 'CEO',
-        linkedin: 'https://linkedin.com/in/johndoe',
-      },
-    ],
-  })
-  @Prop({ type: [LeadershipTeamSchema], required: false })
-  leadership_team: Record<string, any>[];
-
-  @ApiPropertyOptional({
     description: 'Key achievements of the association',
     example: [
       {
@@ -159,7 +141,14 @@ export class About extends Document {
 
   @ApiPropertyOptional({
     description: 'Information about partners or sponsors',
-    example: [{ title: 'TechCorp', description: 'Partner since 2020', logo: 'https://via.placeholder.com/50.png?text=logo', wesite: 'https://mac-landing.vercel.com' }],
+    example: [
+      {
+        title: 'TechCorp',
+        description: 'Partner since 2020',
+        logo: 'https://via.placeholder.com/50.png?text=logo',
+        wesite: 'https://mac-landing.vercel.com',
+      },
+    ],
   })
   @Prop({ type: [PartnershipsSchema], required: false })
   partnerships: Record<string, any>[];
@@ -215,20 +204,6 @@ export class About extends Document {
   })
   @Prop({ type: [FileSchema], required: false })
   documents: Record<string, any>[];
-
-  @ApiPropertyOptional({
-    description: 'Terms and conditions of the association',
-    example: 'By using our services, you agree to the terms and conditions.',
-  })
-  @Prop({ type: String })
-  terms_and_conditions: string;
-
-  @ApiPropertyOptional({
-    description: 'Privacy and security policies of the association',
-    example: 'We prioritize your privacy and data security.',
-  })
-  @Prop({ type: String })
-  privacy_policy: string;
 }
 
 export const AboutSchema = SchemaFactory.createForClass(About);

@@ -40,44 +40,44 @@ export class RegisterAttendeeUseCase {
     const attendee =
       await this.eventAttendeeRepository.registerAttendee(registerAttendeeDto);
 
-    // Construct the email content
-    const subject = `Registration Confirmation for ${event.title}`;
-    const text = `
-      Dear ${user.first_name},
+    // Format dates for email
+    const eventDate = event.startTime.toDateString();
+    const eventStartTime = event.startTime.toLocaleTimeString();
+    const eventEndTime = event.endTime.toLocaleTimeString();
 
-      You have successfully registered for the event "${event.title}".
-
-      Event Details:
-      - Date: ${event.startTime.toDateString()}
-      - Time: ${event.startTime.toLocaleTimeString()} - ${event.endTime.toLocaleTimeString()}
-      - Location: ${event.location}
-
-      We look forward to your participation!
-
-      Best regards,
-      The Event Team
-    `;
-
-    const html = `
-      <p>Dear ${user.first_name},</p>
-      <p>You have successfully registered for the event <strong>${event.title}</strong>.</p>
-      <p><strong>Event Details:</strong></p>
-      <ul>
-        <li><strong>Date:</strong> ${event.startTime.toDateString()}</li>
-        <li><strong>Time:</strong> ${event.startTime.toLocaleTimeString()} - ${event.endTime.toLocaleTimeString()}</li>
-        <li><strong>Location:</strong> ${event.location}</li>
-      </ul>
-      <p>We look forward to your participation!</p>
-      <p>Best regards,<br/>The Event Team</p>
-    `;
+    // Prepare template data
+    const templateData = {
+      userName: user.first_name,
+      userEmail: user.email,
+      emailTitle: `Registration Confirmation: ${event.title}`,
+      eventTitle: event.title,
+      eventDate: eventDate,
+      eventStartTime: eventStartTime,
+      eventEndTime: eventEndTime,
+      eventLocation: event.location,
+      eventDescription: event.description,
+      actionRequired: true,
+      actionUrl: `${process.env.FRONTEND_URL}/events/${(event as any)._id}`,
+      actionText: 'View Event Details',
+      secondaryInfo:
+        'You will receive a reminder 24 hours before the event starts.',
+    };
 
     // Send confirmation email to the user
     let emailSent = false;
     try {
-      await this.sendEmailUseCase.execute(user.email, subject, text, html);
+      await this.sendEmailUseCase.executeTemplated(
+        user.email,
+        `Registration Confirmation for ${event.title}`,
+        'event-registration',
+        templateData,
+      );
       emailSent = true;
     } catch (error) {
-      console.error(`Failed to send email to ${user.email}:`, error);
+      console.error(
+        `Failed to send event registration email to ${user.email}:`,
+        error,
+      );
     }
 
     // Return the attendee and an appropriate message

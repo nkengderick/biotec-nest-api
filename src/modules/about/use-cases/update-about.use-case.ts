@@ -23,14 +23,6 @@ export class UpdateAboutUseCase {
       );
     }
 
-    if (updateAboutDto.leadership_team) {
-      about.leadership_team = this.upsertArray(
-        about.leadership_team,
-        updateAboutDto.leadership_team,
-        'member',
-      );
-    }
-
     if (updateAboutDto.social_links) {
       about.social_links = {
         ...about.social_links,
@@ -84,9 +76,6 @@ export class UpdateAboutUseCase {
       contact_email: updateAboutDto.contact_email || about.contact_email,
       contact_phone: updateAboutDto.contact_phone || about.contact_phone,
       address: updateAboutDto.address || about.address,
-      terms_and_conditions:
-        updateAboutDto.terms_and_conditions || about.terms_and_conditions,
-      privacy_policy: updateAboutDto.privacy_policy || about.privacy_policy,
     });
 
     return this.aboutRepository.updateAbout(id, about);

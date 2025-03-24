@@ -12,7 +12,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-
   // Apply LoggerMiddleware globally
   app.use(new LoggerMiddleware().use.bind(new LoggerMiddleware()));
 
@@ -38,7 +37,7 @@ async function bootstrap() {
   const databaseService = app.get(DatabaseService);
   await databaseService.onModuleInit();
 
-  // Get port from environment variable or default to 3000
+  // Get port from environment variables
   const port = process.env.PORT;
   await app.listen(port);
 

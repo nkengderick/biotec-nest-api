@@ -8,7 +8,7 @@ export class RejectApplicationUseCase {
   constructor(
     private readonly applicantRepository: ApplicantRepository,
     private readonly userRepository: UserRepository,
-    private readonly sendEmailUseCase: SendEmailUseCase, // Inject SendEmailUseCase
+    private readonly sendEmailUseCase: SendEmailUseCase,
   ) {}
 
   async execute(applicantId: string) {
@@ -31,31 +31,21 @@ export class RejectApplicationUseCase {
       );
     }
 
-    // Send a rejection email
-    const subject = 'Application Status Update';
-    const textContent = `
-      Dear ${user.first_name},
+    // Send a rejection email using template
+    const templateData = {
+      userName: user.first_name,
+      userEmail: user.email,
+      emailTitle: 'Application Status Update',
+      actionRequired: false,
+      secondaryInfo:
+        'We review our membership criteria regularly and encourage you to apply again in the future.',
+    };
 
-      Thank you for applying. After careful review, we regret to inform you that your application was not approved at this time.
-
-      We appreciate your interest and encourage you to apply again in the future.
-
-      Best regards,  
-      BioTec Universe Team
-    `;
-
-    const htmlContent = `
-      <p>Dear ${user.first_name},</p>
-      <p>Thank you for applying. After careful review, we regret to inform you that your application was not approved at this time.</p>
-      <p>We appreciate your interest and encourage you to apply again in the future.</p>
-      <p>Best regards,<br />BioTec Universe Team</p>
-    `;
-
-    await this.sendEmailUseCase.execute(
+    await this.sendEmailUseCase.executeTemplated(
       user.email,
-      subject,
-      textContent,
-      htmlContent,
+      'Application Status Update',
+      'reject-application',
+      templateData,
     );
 
     return {

@@ -64,7 +64,6 @@ class Partnership {
   @IsString({ message: 'Description must be a string.' })
   description?: string;
 
-
   @ApiPropertyOptional({
     description: 'URL to the partner’s logo',
     example: 'https://example.com/logo.png',
@@ -223,28 +222,6 @@ export class CreateAboutDto {
   address?: string;
 
   @ApiPropertyOptional({
-    description: 'Leadership team and their roles',
-    type: [LeadershipTeamMember],
-    example: [
-      {
-        name: 'John Doe',
-        role: 'CEO',
-        linkedin: 'https://linkedin.com/in/johndoe',
-      },
-      {
-        name: 'Jane Smith',
-        role: 'CFO',
-        linkedin: 'https://linkedin.com/in/janesmith',
-      },
-    ],
-  })
-  @IsOptional()
-  @IsArray({ message: 'Leadership team must be an array.' })
-  @ValidateNested({ each: true })
-  @Type(() => LeadershipTeamMember)
-  leadership_team?: LeadershipTeamMember[];
-
-  @ApiPropertyOptional({
     description: 'Key achievements of the association',
     type: [Achievement],
     example: [
@@ -345,20 +322,4 @@ export class CreateAboutDto {
   @ValidateNested({ each: true })
   @Type(() => File)
   documents?: File[];
-
-  @ApiPropertyOptional({
-    description: 'Terms and conditions of the association',
-    example: 'By using our services, you agree to the terms and conditions.',
-  })
-  @IsOptional()
-  @IsString({ message: 'Terms and conditions must be a string.' })
-  terms_and_conditions?: string;
-
-  @ApiPropertyOptional({
-    description: 'Privacy and security policies of the association',
-    example: 'Your data is secure and private according to our policy.',
-  })
-  @IsOptional()
-  @IsString({ message: 'Privacy policy must be a string.' })
-  privacy_policy?: string;
 }

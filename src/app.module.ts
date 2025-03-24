@@ -17,6 +17,7 @@ import { FeedbackModule } from './modules/feedbacks/feedbacks.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { FapshiModule } from './common/fapshi/fapshi.module';
 import { PaymentsModule } from './modules/payment/payment.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PaymentsModule } from './modules/payment/payment.module';
     FapshiModule,
     PaymentsModule,
     ChatbotModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],

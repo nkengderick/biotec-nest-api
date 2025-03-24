@@ -42,6 +42,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/common/services/email.service';
 import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
+import { UpdateRoleUseCase } from './use-cases/update-role.use-case';
+import { EmailTemplateService } from 'src/common/services/email-template.service';
+import { About, AboutSchema } from '../about/schemas/about.schema';
+import { GetAboutUseCase } from '../about/use-cases/get-about.use-case';
+import { AboutRepository } from '../about/repositories/about.repository';
 
 @Module({
   imports: [
@@ -51,6 +56,7 @@ import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
       { name: Applicant.name, schema: ApplicantSchema },
       { name: MemberRole.name, schema: MemberRoleSchema },
       { name: UserSettings.name, schema: UserSettingsSchema },
+      { name: About.name, schema: AboutSchema },
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -58,7 +64,7 @@ import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') },
       }),
     }),
   ],
@@ -67,6 +73,7 @@ import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
     // Services
     UserManagementService,
     EmailService,
+    EmailTemplateService,
 
     // Repositories
     UserRepository,
@@ -74,6 +81,7 @@ import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
     ApplicantRepository,
     MemberRoleRepository,
     UserSettingsRepository,
+    AboutRepository,
 
     // Use Cases
     ApplyUseCase,
@@ -89,6 +97,8 @@ import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
     UpdateSettingsUseCase,
     AssignRoleUseCase,
     SendEmailUseCase,
+    UpdateRoleUseCase,
+    GetAboutUseCase,
   ],
   exports: [
     UserManagementService,

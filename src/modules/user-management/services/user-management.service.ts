@@ -10,6 +10,7 @@ import { ChangePasswordUseCase } from '../use-cases/change-password.use-case';
 import { UpdateProfileUseCase } from '../use-cases/update-profile.use-case';
 import { UpdateSettingsUseCase } from '../use-cases/update-settings.use-case';
 import { AssignRoleUseCase } from '../use-cases/assign-role.use-case';
+import { UpdateRoleUseCase } from '../use-cases/update-role.use-case';
 
 // DTOs
 import { ApplyDto } from '../dto/apply.dto';
@@ -30,6 +31,7 @@ import { ApplicantRepository } from '../repositories/applicant.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { Member } from '../schemas/member.schema';
 import { Applicant } from '../schemas/applicant.schema';
+import { UpdateRoleDto } from '../dto/update-role.dto';
 
 @Injectable()
 export class UserManagementService {
@@ -46,6 +48,7 @@ export class UserManagementService {
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly updateSettingsUseCase: UpdateSettingsUseCase,
     private readonly assignRoleUseCase: AssignRoleUseCase,
+    private readonly updateRoleUseCase: UpdateRoleUseCase,
     private readonly memberRepository: MemberRepository,
     private readonly applicantRepository: ApplicantRepository,
     private readonly userRepository: UserRepository,
@@ -98,6 +101,10 @@ export class UserManagementService {
     return this.assignRoleUseCase.execute(assignRoleDto);
   }
 
+  async updateRole(updateRoleDto: UpdateRoleDto) {
+    return this.updateRoleUseCase.execute(updateRoleDto);
+  }
+
   // Settings
   async updateSettings(updateSettingsDto: UpdateSettingsDto) {
     return this.updateSettingsUseCase.execute(updateSettingsDto);
@@ -119,7 +126,7 @@ export class UserManagementService {
     }
     return member;
   }
-  
+
   async findApplicantByUserId(userId: string): Promise<Applicant | null> {
     const applicant = await this.applicantRepository.findByUserId(userId);
     if (!applicant) {

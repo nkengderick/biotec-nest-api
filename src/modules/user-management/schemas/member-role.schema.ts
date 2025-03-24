@@ -5,6 +5,49 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type MemberRoleDocument = MemberRole & Document;
 
+export enum AssociationRole {
+  President = 'President',
+  VicePresident = 'Vice President',
+  Secretary = 'Secretary',
+  Treasurer = 'Treasurer',
+  CEO = 'CEO',
+  Director = 'Director',
+  Manager = 'Manager',
+  Coordinator = 'Coordinator',
+  Advisor = 'Advisor',
+  Chairperson = 'Chairperson',
+  BoardMember = 'Board Member',
+  RegularMember = 'Regular Member',
+  Volunteer = 'Volunteer',
+  Patron = 'Patron',
+  Auditor = 'Auditor',
+  PublicRelationsOfficer = 'Public Relations Officer',
+  EventCoordinator = 'Event Coordinator',
+  TechnicalAdvisor = 'Technical Advisor',
+  LegalAdvisor = 'Legal Advisor',
+  FundraisingOfficer = 'Fundraising Officer',
+  MembershipOfficer = 'Membership Officer',
+  ProjectManager = 'Project Manager',
+  Webmaster = 'Webmaster',
+  Archivist = 'Archivist',
+  LiaisonOfficer = 'Liaison Officer',
+  Consultant = 'Consultant',
+  Intern = 'Intern',
+  Fellow = 'Fellow',
+  HonoraryMember = 'Honorary Member',
+  Trustee = 'Trustee',
+  Delegate = 'Delegate',
+  Observer = 'Observer',
+  AssociateMember = 'Associate Member',
+  WorkingGroupMember = 'Working Group Member',
+  CommitteeMember = 'Committee Member',
+  RegionalRepresentative = 'Regional Representative',
+  NationalRepresentative = 'National Representative',
+  InternationalRepresentative = 'International Representative',
+  Spokesperson = 'Spokesperson',
+  Facilitator = 'Facilitator',
+}
+
 @Schema({ timestamps: true })
 export class MemberRole {
   @ApiProperty({
@@ -16,14 +59,14 @@ export class MemberRole {
 
   @ApiProperty({
     description: 'The role assigned to the member',
-    example: 'President',
-    enum: ['President', 'Secretary', 'CEO', 'Regular'],
+    example: AssociationRole.President,
+    enum: AssociationRole,
   })
   @Prop({
-    enum: ['President', 'Secretary', 'CEO', 'Regular'],
+    enum: AssociationRole,
     required: true,
   })
-  role: string;
+  role: AssociationRole;
 
   @ApiProperty({
     description: 'The date when the role was assigned',

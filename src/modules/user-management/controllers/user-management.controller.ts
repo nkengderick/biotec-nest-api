@@ -35,6 +35,7 @@ import { User } from '../schemas/user.schema';
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { Member } from '../schemas/member.schema';
 import { Applicant } from '../schemas/applicant.schema';
+import { UpdateRoleDto } from '../dto/update-role.dto';
 
 @ApiTags('User Management') // Grouping for Swagger
 @Controller('auth')
@@ -188,6 +189,16 @@ export class UserManagementController {
   @ApiResponse({ status: 400, description: 'Invalid role data' })
   async assignRole(@Body() assignRoleDto: AssignRoleDto) {
     return this.userManagementService.assignRole(assignRoleDto);
+  }
+
+  @Put('update-role')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update role of user' })
+  @ApiBody({ type: UpdateRoleDto })
+  @ApiResponse({ status: 200, description: 'Role successfully updated' })
+  @ApiResponse({ status: 400, description: 'Invalid role data' })
+  async updateRole(@Body() updateRoleDto: UpdateRoleDto) {
+    return this.userManagementService.updateRole(updateRoleDto);
   }
 
   // ---------- Applicant Management Routes ----------

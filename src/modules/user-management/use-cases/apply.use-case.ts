@@ -16,7 +16,7 @@ export class ApplyUseCase {
     private readonly applicantRepository: ApplicantRepository,
     private readonly memberRepository: MemberRepository,
     private readonly userRepository: UserRepository,
-    private readonly sendEmailUseCase: SendEmailUseCase, // Inject email service
+    private readonly sendEmailUseCase: SendEmailUseCase,
   ) {}
 
   async execute(applyDto: ApplyDto) {
@@ -43,8 +43,9 @@ export class ApplyUseCase {
       }
 
       // Check if the referred member exists (if a referred member ID is provided)
+      let referredMember = null;
       if (applyDto.referred_by_member_id) {
-        const referredMember = await this.memberRepository.findById(
+        referredMember = await this.memberRepository.findById(
           applyDto.referred_by_member_id.toString(),
         );
         if (!referredMember) {
@@ -58,30 +59,24 @@ export class ApplyUseCase {
       // Proceed with the application process
       const applicant = await this.applicantRepository.create(applyDto);
 
-      // Send confirmation email to the user
-      const subject = 'Confirmation of Application Submission';
-
-      const text = `
-      Dear ${user.first_name},
-
-      We are pleased to inform you that we have successfully received your application. Thank you for your interest in joining us. 
-
-      Our team will carefully review your submission, and we will reach out to you should we require any additional information. In the meantime, if you have any questions, please do not hesitate to contact us.
-
-      Best regards,  
-      BioTec Universe  
-      `;
-
-      const html = `
-      <p>Dear ${user.first_name},</p>
-      <p>We are pleased to inform you that we have successfully received your application. Thank you for your interest in joining us.</p>
-      <p>Our team will carefully review your submission, and we will reach out to you should we require any additional information. In the meantime, if you have any questions, please do not hesitate to contact us.</p>
-      <p>Best regards,<br />BioTec Universe</p>
-      `;
+      // Send confirmation email to the user using template
+      const userTemplateData = {
+        userName: user.first_name,
+        userEmail: user.email,
+        emailTitle: 'Application Received',
+        actionRequired: false,
+        secondaryInfo:
+          'We will review your application and get back to you soon.',
+      };
 
       let emailSent = false;
       try {
-        await this.sendEmailUseCase.execute(user.email, subject, text, html);
+        await this.sendEmailUseCase.executeTemplated(
+          user.email,
+          'Application Received',
+          'application-confirmation',
+          userTemplateData,
+        );
         emailSent = true;
       } catch (emailError) {
         console.error(
@@ -93,43 +88,27 @@ export class ApplyUseCase {
       // Send an email to the team about the new applicant
       const teamEmail = process.env.TEAM_EMAIL;
       if (teamEmail) {
-        const teamSubject = `New Application Received: ${user.first_name} ${user.last_name}`;
-
-        const teamText = `
-        Dear Team,
-
-        A new application has been submitted. Please find the applicant's details below:
-
-        Applicant Details:
-        - Name: ${user.first_name} ${user.last_name}
-        - Email: ${user.email}
-        - Specialization Area: ${applyDto.specialization_area}
-
-        Please review the application at your earliest convenience.
-
-        Best regards,  
-        BioTec Universe Application System  
-        `;
-
-        const teamHtml = `
-        <p>Dear Team,</p>
-        <p>A new application has been submitted. Please find the applicant's details below:</p>
-        <p><strong>Applicant Details:</strong></p>
-        <ul>
-          <li><strong>Name:</strong> ${user.first_name} ${user.last_name}</li>
-          <li><strong>Email:</strong> ${user.email}</li>
-          <li><strong>Specialization Area:</strong> ${applyDto.specialization_area}</li>
-        </ul>
-        <p>Please review the application at your earliest convenience.</p>
-        <p>Best regards,<br />BioTec Universe Application System</p>
-        `;
+        // Prepare data for team notification template
+        const teamTemplateData = {
+          emailTitle: `New Application: ${user.first_name} ${user.last_name}`,
+          userName: 'Team',
+          userEmail: teamEmail,
+          applicantName: `${user.first_name} ${user.last_name}`,
+          applicantEmail: user.email,
+          specializationArea: applyDto.specialization_area,
+          referredBy: referredMember
+            ? `${referredMember.first_name} ${referredMember.last_name}`
+            : null,
+          secondaryInfo:
+            'This is an automated notification from the application system.',
+        };
 
         try {
-          await this.sendEmailUseCase.execute(
+          await this.sendEmailUseCase.executeTemplated(
             teamEmail,
-            teamSubject,
-            teamText,
-            teamHtml,
+            `New Application Received: ${user.first_name} ${user.last_name}`,
+            'new-applicant-notification',
+            teamTemplateData,
           );
           console.log(
             `Email sent to the team at ${teamEmail} about the new applicant.`,

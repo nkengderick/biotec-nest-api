@@ -1,0 +1,108 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>BioTec Universe</title>
+    <style>
+      /* Base styles */ body { margin: 0; padding: 0; font-family: 'Segoe UI',
+      Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; color:
+      #333333; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; } /*
+      Email container */ .email-container { max-width: 600px; margin: 0 auto;
+      background-color: #ffffff; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); } /*
+      Header styles */ .header { background-color: #1a5276; padding: 20px 0;
+      text-align: center; border-top-left-radius: 4px; border-top-right-radius:
+      4px; } .header img { max-height: 60px; width: auto; } .header h1 { color:
+      #ffffff; font-size: 24px; margin: 10px 0 0; font-weight: 600; } /* Main
+      content */ .content { padding: 30px; line-height: 1.6; color: #444444; }
+      .content p { margin: 0 0 16px; font-size: 16px; } .content-title {
+      font-size: 20px; color: #1a5276; margin-top: 0; margin-bottom: 20px;
+      font-weight: 600; } .content ul { padding-left: 20px; margin-bottom: 16px;
+      } .content ul li { font-size: 16px; margin-bottom: 8px; color: #444444;
+      line-height: 1.5; } /* Button styling */ .button-container { text-align:
+      center; margin: 25px 0; } .button { display: inline-block;
+      background-color: #1a5276; color: #ffffff !important; /* Force white text
+      */ text-decoration: none; padding: 12px 30px; border-radius: 4px;
+      font-weight: 600; font-size: 16px; border: none; cursor: pointer; } /*
+      Ensure all link states have white text */ .button:link, .button:visited,
+      .button:hover, .button:active { color: #ffffff !important; } /* Secondary
+      content */ .secondary-content { background-color: #f9f9f9; padding: 20px
+      30px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee;
+      text-align: center;} /* Footer styles */ .footer { padding: 20px 30px;
+      text-align: center; } .footer-links { margin-bottom: 10px; } .footer-links
+      a { color: #1a5276; text-decoration: none; margin: 0 10px; font-size:
+      14px; } .footer-links a:hover { text-decoration: underline; }
+      .social-icons { margin-bottom: 15px; } .social-icons a { display:
+      inline-block; margin: 0 10px; color: #1a5276; text-decoration: none; }
+      .footer-text { color: #999999; font-size: 12px; margin: 5px 0; } .address
+      { margin-top: 15px; color: #999999; font-size: 12px; font-style: normal; }
+      /* Responsive design */ @media screen and (max-width: 600px) {
+      .email-container { width: 100%; } .content, .secondary-content, .footer {
+      padding: 20px 15px; } }
+    </style>
+  </head>
+  <body>
+    <div class='email-container'>
+      <!-- Header with logo -->
+      <div class='header'>
+        <img src='{{logoUrl}}' alt='BioTec Universe Logo' />
+        <h1>BioTec Universe</h1>
+      </div>
+
+      <!-- Main email content -->
+      <div class='content'>
+        <h2 class='content-title'>{{emailTitle}}</h2>
+        <p>Dear {{userName}},</p>
+
+        {{{emailContent}}}
+
+        <!-- Action button if needed -->
+        {{#if actionRequired}}
+          <div class='button-container'>
+            <a href='{{actionUrl}}' class='button'>{{actionText}}</a>
+          </div>
+        {{/if}}
+
+        <p>
+          If you have any questions or need assistance, please don't hesitate to
+          contact our support team.
+        </p>
+
+        <p>Best regards,<br />BioTec Universe Team</p>
+      </div>
+
+      <!-- Secondary information section -->
+      <div class='secondary-content'>
+        <p>{{secondaryInfo}}</p>
+      </div>
+
+      <!-- Footer with links and info -->
+      <div class='footer'>
+        <div class='footer-links'>
+          <a href='{{websiteUrl}}'>Website</a>
+          <a href='{{contactUrl}}'>Contact</a>
+          <a href='{{privacyUrl}}'>Privacy Policy</a>
+        </div>
+
+        <div class='social-icons'>
+          <a href='{{linkedinUrl}}'>LinkedIn</a>
+          <a href='{{twitterUrl}}'>Twitter</a>
+          <a href='{{facebookUrl}}'>Facebook</a>
+        </div>
+
+        <p class='footer-text'>
+          ©
+          {{currentYear}}
+          BioTec Universe. All rights reserved.
+        </p>
+        <p class='footer-text'>This email was sent to {{userEmail}}</p>
+
+        <address class='address'>
+          BioTec Universe<br />
+          {{organizationAddress}}<br />
+          Email:
+          {{organizationEmail}}
+        </address>
+      </div>
+    </div>
+  </body>
+</html>

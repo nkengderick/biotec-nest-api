@@ -26,21 +26,26 @@ import { Member, MemberSchema } from '../user-management/schemas/member.schema';
 import { User, UserSchema } from '../user-management/schemas/user.schema';
 import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
 import { EmailService } from 'src/common/services/email.service';
+import { EmailTemplateService } from 'src/common/services/email-template.service';
+import { AboutModule } from '../about/about.module';
+import { GetAboutUseCase } from '../about/use-cases/get-about.use-case';
+import { AboutRepository } from '../about/repositories/about.repository';
+import { About, AboutSchema } from '../about/schemas/about.schema';
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
-    MongooseModule.forFeature([{ name: Member.name, schema: MemberSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
+      { name: Event.name, schema: EventSchema },
+      { name: Member.name, schema: MemberSchema },
+      { name: User.name, schema: UserSchema },
       { name: EventAttendee.name, schema: EventAttendeeSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: EventSpeaker.name, schema: EventSpeakerSchema },
+      { name: About.name, schema: AboutSchema },
     ]),
   ],
   providers: [
     EventsService,
     EmailService,
+    EmailTemplateService,
     EventRepository,
     EventSpeakerRepository,
     EventAttendeeRepository,
@@ -53,6 +58,8 @@ import { EmailService } from 'src/common/services/email.service';
     AssignSpeakerUseCase,
     GetAllEventsUseCase,
     SendEmailUseCase,
+    GetAboutUseCase,
+    AboutRepository,
   ],
   controllers: [EventsController],
 })
