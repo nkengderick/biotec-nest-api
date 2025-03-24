@@ -4,21 +4,10 @@ import {
   IsEmail,
   IsArray,
   ValidateNested,
-  IsMongoId,
   IsUrl,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { Types } from 'mongoose';
-
-// Leadership Team Class
-class LeadershipTeamMember {
-  @ApiPropertyOptional({
-    description: 'Member Id of the leadership team member',
-  })
-  @IsMongoId({ message: 'member must be an Object ID.' })
-  member: Types.ObjectId;
-}
 
 // Achievements Class
 export class Achievement {

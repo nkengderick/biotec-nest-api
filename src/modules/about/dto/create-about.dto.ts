@@ -12,15 +12,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Types } from 'mongoose';
 
-// Leadership Team Class
-class LeadershipTeamMember {
-  @ApiProperty({
-    description: 'Member Id of the leadership team member',
-  })
-  @IsMongoId({ message: 'member must be an Object ID.' })
-  member: Types.ObjectId;
-}
-
 // Achievements Class
 class Achievement {
   @ApiProperty({

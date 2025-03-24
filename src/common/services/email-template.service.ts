@@ -83,9 +83,7 @@ export class EmailTemplateService {
 
       return {
         logoUrl: about.logo_url || 'src/assets/logo.png',
-        organizationAddress: about.address || 'Your Address Here',
-        organizationEmail:
-          about.contact_email || process.env.ORGANIZATION_EMAIL,
+        organizationAddress: about.address || 'Molyko, Buea, Cameroon',
         linkedinUrl: about.social_links?.linkedin || '#',
         twitterUrl: about.social_links?.twitter || '#',
         facebookUrl: about.social_links?.facebook || '#',
@@ -134,6 +132,8 @@ export class EmailTemplateService {
         websiteUrl: process.env.FRONTEND_URL || '#',
         contactUrl: `${process.env.FRONTEND_URL}/contact` || '#',
         privacyUrl: `${process.env.FRONTEND_URL}/privacy-policy` || '#',
+        organizationEmail:
+          process.env.ORGANIZATION_EMAIL || 'info@biotecuniverse.org',
         ...organizationDetails,
       };
 

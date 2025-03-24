@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 // Define sub-schema for social links
@@ -109,6 +109,13 @@ export class About extends Document {
   })
   @Prop({ match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, required: false })
   contact_email: string;
+
+  @ApiPropertyOptional({
+    description: 'Info email of the association',
+    example: 'info@biotechuniverse.com',
+  })
+  @Prop({ match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, required: false })
+  info_email: string;
 
   @ApiPropertyOptional({
     description: 'Contact phone number of the association',
