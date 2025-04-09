@@ -47,9 +47,15 @@ import { EmailTemplateService } from 'src/common/services/email-template.service
 import { About, AboutSchema } from '../about/schemas/about.schema';
 import { GetAboutUseCase } from '../about/use-cases/get-about.use-case';
 import { AboutRepository } from '../about/repositories/about.repository';
+import { PaymentsService } from '../payment/services/payment.service';
+import { PaymentRepository } from '../payment/repositories/payment.repository';
+import { FapshiService } from 'src/common/fapshi/services/fapshi.service';
+import { Payment, PaymentSchema } from '../payment/schemas/payment.schema';
+import { FapshiModule } from 'src/common/fapshi/fapshi.module';
 
 @Module({
   imports: [
+    FapshiModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Member.name, schema: MemberSchema },
@@ -57,6 +63,7 @@ import { AboutRepository } from '../about/repositories/about.repository';
       { name: MemberRole.name, schema: MemberRoleSchema },
       { name: UserSettings.name, schema: UserSettingsSchema },
       { name: About.name, schema: AboutSchema },
+      { name: Payment.name, schema: PaymentSchema },
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -74,6 +81,8 @@ import { AboutRepository } from '../about/repositories/about.repository';
     UserManagementService,
     EmailService,
     EmailTemplateService,
+    PaymentsService,
+    PaymentRepository,
 
     // Repositories
     UserRepository,

@@ -73,6 +73,14 @@ export class Applicant {
   })
   @Prop({ default: null })
   profile_photo_url: string;
+
+  @ApiProperty({
+    description: 'The transaction ID associated with the application payment',
+    example: 'txn_1234567890abcdef',
+    required: false,
+  })
+  @Prop({ type: String, required: false })
+  transactionId?: string;
 }
 
 export const ApplicantSchema = SchemaFactory.createForClass(Applicant);

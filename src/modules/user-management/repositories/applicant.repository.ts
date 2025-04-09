@@ -79,6 +79,16 @@ export class ApplicantRepository {
       .exec();
   }
 
+  // Update an applicant by user_id
+  async updateByUserId(
+    userId: string,
+    applicant: Partial<Applicant>,
+  ): Promise<Applicant> {
+    return this.applicantModel
+      .findOneAndUpdate({ user_id: userId }, applicant, { new: true })
+      .exec();
+  }
+
   // Delete an applicant by ID
   async delete(id: string): Promise<void> {
     await this.applicantModel.findByIdAndDelete(id).exec();

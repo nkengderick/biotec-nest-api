@@ -9,6 +9,8 @@ import { ApplyDto } from '../dto/apply.dto';
 import { MemberRepository } from '../repositories/member.repository';
 import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
 import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
+import { PaymentsService } from 'src/modules/payment/services/payment.service';
+import { CreatePaymentDto } from 'src/modules/payment/dtos/create-payment.dto';
 
 @Injectable()
 export class ApplyUseCase {
@@ -17,6 +19,7 @@ export class ApplyUseCase {
     private readonly memberRepository: MemberRepository,
     private readonly userRepository: UserRepository,
     private readonly sendEmailUseCase: SendEmailUseCase,
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   async execute(applyDto: ApplyDto) {
@@ -59,12 +62,39 @@ export class ApplyUseCase {
       // Proceed with the application process
       const applicant = await this.applicantRepository.create(applyDto);
 
+      // --- 💳 Initiate Payment ---
+      const createPaymentDto: CreatePaymentDto = {
+        externalId: applicant.user_id.toString(),
+        amount: 3000,
+        email: user.email,
+        message: 'Welcome payment for new user',
+        userId: applicant.user_id.toString(),
+        currency: 'XAF',
+      };
+
+      let paymentLink = '';
+      let transactionId = '';
+
+      try {
+        const paymentResponse =
+          await this.paymentsService.makePayment(createPaymentDto);
+        paymentLink = paymentResponse.link;
+        transactionId = paymentResponse.transactionId;
+
+        // 📝 Save transactionId to applicant
+        await this.applicantRepository.updateByUserId(applicant.user_id.toString(), { transactionId });
+      } catch (paymentError) {
+        console.error('Payment creation failed:', paymentError);
+      }
+
       // Send confirmation email to the user using template
       const userTemplateData = {
         userName: user.first_name,
         userEmail: user.email,
         emailTitle: 'Application Received',
-        actionRequired: false,
+        actionRequired: true,
+        actionUrl: paymentLink,
+        actionText: 'Complete Your Application With Payment',
         secondaryInfo:
           'We will review your application and get back to you soon.',
       };

@@ -42,9 +42,13 @@ export class PaymentsService {
       message,
     });
 
+    console.log(response)
+
     // Update payment with the transaction ID and date initiated from Fapshi
     payment.transactionId = response.transId;
     payment.dateInitiated = response.dateInitiated; // Add dateInitiated here
+    await payment.save();
+    
     await this.paymentRepository.updateStatus(
       payment.id,
       PaymentStatus.PENDING,
