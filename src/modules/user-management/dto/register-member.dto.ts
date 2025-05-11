@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsUrl,
   IsEnum,
+  IsMongoId,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
@@ -12,13 +13,11 @@ import { AssociationRole } from '../schemas/member-role.schema';
 import { Applicant } from '../schemas/applicant.schema';
 
 export class RegisterMemberDto {
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({
-    description: 'ID of the user to register as a member',
-    type: String,
-  })
-  user_id: Types.ObjectId;
+  @IsNotEmpty({ message: 'User ID cannot be empty' })
+  @IsString({ message: 'User ID must be a string' })
+  @IsMongoId({ message: 'User ID must be a valid MongoDB ObjectId' })
+  @ApiProperty({ description: 'ID of the user applying', type: String })
+  readonly user_id: Types.ObjectId;
 
   @IsString()
   @IsOptional()
@@ -102,18 +101,22 @@ export class RegisterMemberDto {
   })
   role: AssociationRole;
 
+  constructor(data: Partial<RegisterMemberDto>) {
+    Object.assign(this, data);
+  }
+
   static fromApplicant(applicant: Applicant): RegisterMemberDto {
-    const dto = new RegisterMemberDto();
-    dto.user_id = applicant.user_id;
-    dto.bio = null;
-    dto.skills = null;
-    dto.interests = null;
-    dto.specialization = applicant.specialization_area;
-    dto.address = null;
-    dto.social_links = null;
-    dto.resume_url = applicant.resume_url;
-    dto.profile_photo_url = applicant.profile_photo_url;
-    dto.role = AssociationRole.RegularMember;
-    return dto;
+    return new RegisterMemberDto({
+      user_id: applicant.user_id,
+      bio: applicant.motivation_letter,
+      skills: null,
+      interests: null,
+      specialization: applicant.specialization_area,
+      address: null,
+      social_links: null,
+      resume_url: applicant.resume_url,
+      profile_photo_url: applicant.profile_photo_url,
+      role: AssociationRole.RegularMember,
+    });
   }
 }

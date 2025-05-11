@@ -16,11 +16,13 @@ import {
 import { GetAllProjectsUseCase } from './use-cases/get-all-projects.use-case';
 import { MemberRepository } from '../user-management/repositories/member.repository';
 import { Member, MemberSchema } from '../user-management/schemas/member.schema';
+import { User, UserSchema } from '../user-management/schemas/user.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Project.name, schema: ProjectSchema }]),
     MongooseModule.forFeature([{ name: Member.name, schema: MemberSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: ProjectMember.name, schema: ProjectMemberSchema },
     ]),

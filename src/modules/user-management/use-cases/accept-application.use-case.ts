@@ -59,6 +59,13 @@ export class AcceptApplicationUseCase {
       throw new Error('Failed to assign role');
     }
 
+    const updatedApplicant = await this.applicantRepository.update(
+      applicant.user_id.toString(),
+      {
+        application_status: 'approved',
+      },
+    );
+
     // 5. Send a congratulatory email to the user using template
     const templateData = {
       userName: updatedUser.first_name,
