@@ -39,6 +39,7 @@ export class AcceptApplicationUseCase {
       );
     }
 
+  
     // 3. Create a new member based on applicant data
     const registerMemberDto = RegisterMemberDto.fromApplicant(applicant);
     const newMember =
