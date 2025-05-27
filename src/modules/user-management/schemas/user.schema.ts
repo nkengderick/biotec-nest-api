@@ -56,7 +56,7 @@ export class User {
     default: 'student',
   })
   @Prop({ required: true, enum: ['student', 'professional', 'institutional', 'organizational'] })
-  application_type: string;
+  user_category: string;
 
   @ApiProperty({
     description: 'Date the user account was created',

@@ -57,5 +57,5 @@ export class SignUpDto {
     required: true,
     enum: ['student', 'professional', 'institutional', 'organizational'],
   })
-  application_type: string;
+  user_category: string;
 }
