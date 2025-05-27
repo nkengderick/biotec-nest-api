@@ -7,6 +7,7 @@ import {
   IsIn,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Prop } from '@nestjs/mongoose';
 
 export class SignUpDto {
   @IsNotEmpty({ message: 'Email cannot be empty' })
@@ -45,4 +46,16 @@ export class SignUpDto {
     type: String,
   })
   readonly user_type: string;
+
+  @ApiProperty({
+    description: 'Type of user application',
+    example: 'student',
+    enum: ['student', 'professional', 'institutional', 'organizational'],
+    default: 'student',
+  })
+  @Prop({
+    required: true,
+    enum: ['student', 'professional', 'institutional', 'organizational'],
+  })
+  application_type: string;
 }

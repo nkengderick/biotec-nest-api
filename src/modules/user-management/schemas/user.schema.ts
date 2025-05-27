@@ -50,6 +50,15 @@ export class User {
   user_type: string;
 
   @ApiProperty({
+    description: 'Type of user application',
+    example: 'student',
+    enum: ['student', 'professional', 'institutional', 'organizational'],
+    default: 'student',
+  })
+  @Prop({ required: true, enum: ['student', 'professional', 'institutional', 'organizational'] })
+  application_type: string;
+
+  @ApiProperty({
     description: 'Date the user account was created',
     example: '2024-09-18T12:34:56.789Z',
     default: 'created date',
