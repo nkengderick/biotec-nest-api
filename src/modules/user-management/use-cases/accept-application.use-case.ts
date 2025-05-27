@@ -39,6 +39,7 @@ export class AcceptApplicationUseCase {
       );
     }
 
+  
     // 3. Create a new member based on applicant data
     const registerMemberDto = RegisterMemberDto.fromApplicant(applicant);
     const newMember =
@@ -58,6 +59,13 @@ export class AcceptApplicationUseCase {
     if (!assignRole) {
       throw new Error('Failed to assign role');
     }
+
+    const updatedApplicant = await this.applicantRepository.update(
+      applicant.user_id.toString(),
+      {
+        application_status: 'approved',
+      },
+    );
 
     // 5. Send a congratulatory email to the user using template
     const templateData = {

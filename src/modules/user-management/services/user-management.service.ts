@@ -112,7 +112,7 @@ export class UserManagementService {
 
   // Fetch all members
   async findAllMembers() {
-    const members = await this.memberRepository.findAll();
+    const members = await this.memberRepository.findAllMembers();
     if (!members || members.length === 0) {
       throw new NotFoundException('No members found');
     }
@@ -120,7 +120,7 @@ export class UserManagementService {
   }
 
   async findMemberByUserId(userId: string): Promise<Member | null> {
-    const member = await this.memberRepository.findByUserId(userId);
+    const member = await this.memberRepository.findByUserId2(userId);
     if (!member) {
       throw new NotFoundException('No member found');
     }
