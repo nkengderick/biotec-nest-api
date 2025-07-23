@@ -35,15 +35,15 @@ export class ApplyUseCase {
       }
 
       // Check if an applicant with the same user ID already exists
-      const existingApplicant = await this.applicantRepository.findByUserId(
-        applyDto.user_id.toString(),
-      );
-      if (existingApplicant) {
-        throw new HttpException(
-          'Applicant with the same user ID already exists',
-          HttpStatus.CONFLICT,
-        );
-      }
+      // const existingApplicant = await this.applicantRepository.findByUserId(
+      //   applyDto.user_id.toString(),
+      // );
+      // if (existingApplicant) {
+      //   throw new HttpException(
+      //     'Applicant with the same user ID already exists',
+      //     HttpStatus.CONFLICT,
+      //   );
+      // }
 
       // Check if the referred member exists (if a referred member ID is provided)
       let referredMember = null;
@@ -67,11 +67,10 @@ export class ApplyUseCase {
         externalId: applicant.user_id.toString(),
         amount: 3000,
         email: user.email,
-        message: 'Welcome payment for new user',
+        message: 'Biotec Universe Registration Fee',
         userId: applicant.user_id.toString(),
         currency: 'XAF',
       };
-
       let paymentLink = '';
       let transactionId = '';
 
@@ -82,16 +81,21 @@ export class ApplyUseCase {
         transactionId = paymentResponse.transactionId;
 
         // 📝 Save transactionId to applicant
-        await this.applicantRepository.updateByUserId(applicant.user_id.toString(), { transactionId });
+        await this.applicantRepository.updateByUserId(
+          applicant.user_id.toString(),
+          { transactionId },
+        );
       } catch (paymentError) {
         console.error('Payment creation failed:', paymentError);
       }
+      console.log('Payment link generated: ', paymentLink);
 
       // Send confirmation email to the user using template
       const userTemplateData = {
         userName: user.first_name,
         userEmail: user.email,
         emailTitle: 'Application Received',
+        paymentLink: paymentLink,
         actionRequired: true,
         actionUrl: paymentLink,
         actionText: 'Complete Your Application With Payment',
@@ -155,7 +159,7 @@ export class ApplyUseCase {
 
       // Return a success message
       const message = emailSent
-        ? 'Application submitted successfully, and confirmation email sent'
+        ? 'Application submitted successfully, and confirmation email sent with payment link'
         : 'Application submitted successfully, but confirmation email failed to send';
 
       return { message, applicant };
