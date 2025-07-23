@@ -35,15 +35,15 @@ export class ApplyUseCase {
       }
 
       // Check if an applicant with the same user ID already exists
-      // const existingApplicant = await this.applicantRepository.findByUserId(
-      //   applyDto.user_id.toString(),
-      // );
-      // if (existingApplicant) {
-      //   throw new HttpException(
-      //     'Applicant with the same user ID already exists',
-      //     HttpStatus.CONFLICT,
-      //   );
-      // }
+      const existingApplicant = await this.applicantRepository.findByUserId(
+        applyDto.user_id.toString(),
+      );
+      if (existingApplicant) {
+        throw new HttpException(
+          'Applicant with the same user ID already exists',
+          HttpStatus.CONFLICT,
+        );
+      }
 
       // Check if the referred member exists (if a referred member ID is provided)
       let referredMember = null;
