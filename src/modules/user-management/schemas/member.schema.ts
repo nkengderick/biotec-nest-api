@@ -87,6 +87,39 @@ export class Member {
     default: AssociationRole.RegularMember,
   })
   role: AssociationRole;
+
+  @ApiProperty({
+    description:
+      'Unique member ID following format BTU[YY][MM][Type][TypeSeq][MemberSeq]',
+    example: 'BTU2512P0305',
+    required: true,
+  })
+  @Prop({ type: String, unique: true })
+  memberid: string;
+
+  @ApiProperty({
+    description: 'Whether a membership card has been issued for this member',
+    example: false,
+    required: false,
+  })
+  @Prop({ type: Boolean, default: false })
+  cardissued: boolean;
+
+  @ApiProperty({
+    description: 'Date when the membership card was issued',
+    example: '2025-01-15T10:30:00Z',
+    required: false,
+  })
+  @Prop({ type: Date })
+  cardissuedat: Date;
+
+  @ApiProperty({
+    description: 'URL to the membership card PDF',
+    example: 'https://example.com/cards/BTU2512P0305.pdf',
+    required: false,
+  })
+  @Prop({ type: String })
+  cardpdfurl: string;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);

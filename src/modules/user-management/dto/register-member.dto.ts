@@ -101,6 +101,41 @@ export class RegisterMemberDto {
   })
   role: AssociationRole;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description:
+      'Unique member ID following format BTU[YY][MM][Type][TypeSeq][MemberSeq]',
+    example: 'BTU2512P0305',
+  })
+  memberid?: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Whether a membership card has been issued for this member',
+    example: false,
+    required: false,
+  })
+  cardissued?: boolean;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Date when the membership card was issued',
+    example: '2025-01-15T10:30:00Z',
+    required: false,
+  })
+  cardissuedat?: Date;
+
+  @IsString()
+  @IsOptional()
+  @IsUrl()
+  @ApiProperty({
+    description: 'URL to the membership card PDF',
+    example: 'https://example.com/cards/BTU2512P0305.pdf',
+    required: false,
+  })
+  cardpdfurl?: string;
+
   constructor(data: Partial<RegisterMemberDto>) {
     Object.assign(this, data);
   }

@@ -119,4 +119,36 @@ export class MemberRepository {
       throw new Error('Could not fetch data'); // or handle it as needed
     }
   }
+
+  async generateMemberId(userCategory: string): Promise<string> {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2); // Last 2 digits of year
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Month with leading zero
+
+    // Map user category to type code
+    const typeMap = {
+      student: 's',
+      professional: 'p',
+      institutional: 'i',
+      organizational: 'o',
+    };
+    const typeCode = typeMap[userCategory?.toLowerCase()] || 's';
+
+    // Get all existing members to calculate sequences
+    const allMembers = await this.findAll();
+
+    // Count members of this type for TypeSeq
+    const membersOfType = allMembers.filter((member) => {
+      if (!member.memberid) return false;
+      const memberTypeCode = member.memberid.charAt(5); // 6th character (index 5)
+      return memberTypeCode === typeCode;
+    });
+    const typeSeq = (membersOfType.length + 1).toString().padStart(2, '0');
+
+    // Count total members for MemberSeq
+    const totalMembers = allMembers.filter((member) => !!member.memberid);
+    const memberSeq = (totalMembers.length + 1).toString().padStart(2, '0');
+
+    return `BTU${year}${month}${typeCode.toUpperCase()}${typeSeq}${memberSeq}`;
+  }
 }

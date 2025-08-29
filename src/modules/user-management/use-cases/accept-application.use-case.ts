@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ApplicantRepository } from '../repositories/applicant.repository';
 import { UserRepository } from '../repositories/user.repository';
+import { MemberRepository } from '../repositories/member.repository';
 import { SendEmailUseCase } from 'src/common/use-cases/send-email.use-case';
 import { AssignRoleUseCase } from './assign-role.use-case';
 import { AssociationRole } from '../schemas/member-role.schema';
@@ -12,6 +13,7 @@ export class AcceptApplicationUseCase {
   constructor(
     private readonly applicantRepository: ApplicantRepository,
     private readonly userRepository: UserRepository,
+    private readonly memberRepository: MemberRepository,
     private readonly registerMemberUseCase: RegisterMemberUseCase,
     private readonly sendEmailUseCase: SendEmailUseCase,
     private readonly assignRoleUseCase: AssignRoleUseCase,
@@ -39,9 +41,16 @@ export class AcceptApplicationUseCase {
       );
     }
 
-  
-    // 3. Create a new member based on applicant data
+    // 3. Generate memberid before creating member
+    const memberid = await this.memberRepository.generateMemberId(
+      updatedUser.user_category,
+    );
+
+    // 4. Create a new member based on applicant data
     const registerMemberDto = RegisterMemberDto.fromApplicant(applicant);
+    registerMemberDto.memberid = memberid;
+    registerMemberDto.cardissued = false;
+
     const newMember =
       await this.registerMemberUseCase.execute(registerMemberDto);
 
@@ -49,7 +58,7 @@ export class AcceptApplicationUseCase {
       throw new Error('Failed to create new member');
     }
 
-    // 4. Assign 'Regular Member' role
+    // 5. Assign 'Regular Member' role
     const assignRole = await this.assignRoleUseCase.execute({
       member_id: (newMember as any)._id,
       role: AssociationRole.RegularMember,
@@ -67,7 +76,7 @@ export class AcceptApplicationUseCase {
       },
     );
 
-    // 5. Send a congratulatory email to the user using template
+    // 6. Send a congratulatory email to the user using template
     const templateData = {
       userName: updatedUser.first_name,
       userEmail: updatedUser.email,
@@ -89,7 +98,7 @@ export class AcceptApplicationUseCase {
 
     return {
       message:
-        'Application accepted, user promoted to member, new member created, regular member role assigned, and email sent',
+        'Application accepted, user promoted to member, new member created, memberID generated, regular member role assigned, and email sent',
       applicant,
       updatedUser,
       newMember,
