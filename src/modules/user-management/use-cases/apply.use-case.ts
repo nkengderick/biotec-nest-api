@@ -65,7 +65,7 @@ export class ApplyUseCase {
       // --- 💳 Initiate Payment ---
       const createPaymentDto: CreatePaymentDto = {
         externalId: applicant.user_id.toString(),
-        amount: 3000,
+        amount: 3100,
         email: user.email,
         message: 'Biotec Universe Registration Fee',
         userId: applicant.user_id.toString(),
